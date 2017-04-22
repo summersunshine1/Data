@@ -11,10 +11,14 @@ def integrate_main():
         for direction in directions:
             if id==2 and direction==1:
                 continue
-            # handle_main(id, direction)
-            # create_main()
+            if id==1 and direction==0:
+                continue
+            if id == 2 and direction == 0:
+                continue
+            handle_main(id, direction)
+            trend_cols,residual_cols = create_main()
             aggregate_main(id, direction)
-            predict_main(id, direction)
+            predict_main(id, direction, trend_cols,residual_cols)
             
 if __name__ == '__main__':
     integrate_main()

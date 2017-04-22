@@ -173,10 +173,14 @@ def aggregatedata(resdic,path):
 def handle_main(id,direction):
     residual_dic,trend_dic,seasonal = getInfos(id,direction)
     aggregatedata(residual_dic, residual_path)
-    # print(residual_dic)
+    # print(len(residual_dic))
     aggregatedata(trend_dic, trend_path)
-    # print(trend_dic)
+    # print(len(trend_dic))
     writevolume(seasonal,seasonal_path)
+    
+# def handle_main_new(id, direction):
+    # residual_dic,trend_dic,seasonal = getInfos(id,direction)
+    # for k,v in residual_dic.i
 
 if __name__=="__main__":
     handle_main(3,1)

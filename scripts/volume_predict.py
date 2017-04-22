@@ -17,7 +17,7 @@ import tensorflow as tf
 from timeseriescase import *
 
 residual_model_path = "F:/kdd/dataSets/training/residual.pkl"
-trend_model_path = "F:/kdd/scripts/rfvolume.pkl"
+trend_model_path = "F:/kdd/dataSets/training/trend.pkl"
 seasonal_path = "F:/kdd/dataSets/training/season_norm.csv"
 
 volume_test_path = "F:/kdd/dataSets/testing_phase1/predict_voulume_data.csv"
@@ -32,8 +32,25 @@ residual_data = pd.read_csv(lstm_predict_path, encoding='utf-8')
 predict_data = pd.read_csv(volume_test_path, encoding='utf-8') 
 real_data = pd.read_csv(real_volume_path, encoding='utf-8')
 
+pastresidual = pd.read_csv("F:/kdd/dataSets/training/residual.csv", encoding='utf-8')
+
 id = 3
 direction = 1
+
+def getresidual():
+    volumes = pastresidual['volume']
+    # plt.plot(volumes)
+    # plt.show()
+    # temp1 = volumes[-35:]
+    # temp2 = volumes[-72:-35]
+    # print(len(temp1))
+    # print(len(temp2))
+    # temp = np.hstack((temp1, temp2))
+    temp = volumes[-72:]
+    temp = np.array(temp)
+    # for i in range(72):
+        # print(temp[i])
+    return temp
 
 def setid_direction(id_, direction_):
     global id
@@ -62,20 +79,20 @@ def gettruevolume():
         res_dic[date][num] = volumes[i]
     return res_dic,time_windows    
     
-def model_predict(model_path, isResidual):
-    if isResidual:
-        x = predict_data[['norm_time','holiday','week','pressure', 'sea_pressure',
-    'wind_direction', 'wind_speed', 'temperature', 'rel_humidity', 'precipitation']]
-    else:
-        tempcols = []
-        tempcols.append(str(5))
-        tempcols = np.array(tempcols)
-        # restcols = np.array(['average_width','total_length','pressure','sea_pressure','wind_direction','temperature','rel_humidity'])
-        restcols = np.array(['holiday','norm_time','temperature'])
-        cols = np.hstack((tempcols, restcols))
+def model_predict(model_path, isResidual,cols):
+    # if isResidual:
         # x = predict_data[['norm_time','holiday','week','pressure', 'sea_pressure',
     # 'wind_direction', 'wind_speed', 'temperature', 'rel_humidity', 'precipitation']]
-        x = predict_data[cols]
+    # else:
+        # tempcols = []
+        # tempcols.append(str(5))
+        # tempcols = np.array(tempcols)
+        # restcols = np.array(['average_width','total_length','pressure','sea_pressure','wind_direction','temperature','rel_humidity'])
+        # restcols = np.array(['holiday','norm_time','temperature'])
+        # cols = np.hstack((tempcols, restcols))
+        # x = predict_data[['norm_time','holiday','week','pressure', 'sea_pressure',
+    # 'wind_direction', 'wind_speed', 'temperature', 'rel_humidity', 'precipitation']]
+    x = predict_data[cols]
     clf = joblib.load(model_path)
     predict_y = clf.predict(x)
     return predict_y 
@@ -104,10 +121,11 @@ def getResidualdic():
         res_dic[dates[i]][intervals[i]] = volumes[i]
     return res_dic
     
-def predict():
-    residual_predict_y = model_predict(residual_model_path, 1)
-    residual_dic = getResidualdic()
-    trend_predict_y = model_predict(trend_model_path, 0)
+def predict(trend_cols,residual_cols):
+    residual_predict_y = model_predict(residual_model_path, 1,residual_cols)
+    # residual_dic = getResidualdic()
+    # residual_predict_y = getresidual()
+    trend_predict_y = model_predict(trend_model_path, 0, trend_cols)
     # plt.plot(residual_predict_y)
     # plt.plot(trend_predict_y, color='red')
     # plt.show()
@@ -130,7 +148,14 @@ def predict():
             continue
         if not predict_intervals[i] in true_volume_dic[predict_dates[i]]:
             continue
-        predicted_y =  trend_predict_y[i] + seasonal_dic[predict_intervals[i]]+residual_predict_y[i]#residual_dic[predict_dates[i]][predict_intervals[i]]
+        temp_interval = predict_intervals[i]
+        if predict_intervals[i]==72:
+            temp_interval = 0
+            
+        
+        predicted_y1 =  trend_predict_y[i] + seasonal_dic[predict_intervals[i]]#+residual_predict_y[i]#+residual_dic[predict_dates[i]][predict_intervals[i]]
+        predicted_y2 =  trend_predict_y[i] + seasonal_dic[predict_intervals[i]]+residual_predict_y[i]
+        predicted_y =(predicted_y1+predicted_y2)/2
         predicted_ys.append(predicted_y)
         ground_ys.append(true_volume_dic[predict_dates[i]][predict_intervals[i]])
         d.append(time_windows[i])
@@ -151,15 +176,15 @@ def get_time_from_interval(date,interval):
     day = trace_time.day
     if hour == 24:
         hour = 0
-        day+=1
-        if day>days[month]:
-            month+=1
+        # day+=1
+        # if day>days[month]:
+            # month+=1
     start_time_window = datetime(year, month, day, hour, minute, 0)
     end_time_window = start_time_window + timedelta(minutes=20)
     return start_time_window,end_time_window
     
-def writeResTofile():
-    predicted_ys, predict_intervals, predict_dates = newPredict()
+def writeResTofile(trend_cols,residual_cols):
+    predicted_ys, predict_intervals, predict_dates = newPredict(trend_cols,residual_cols)
     if not os.path.exists(final_res_path):
         fw = open(final_res_path,'w')
         fw.writelines(','.join(['"tollgate_id"', '"time_window"', '"direction"', '"volume"'])+'\n')
@@ -174,11 +199,13 @@ def writeResTofile():
     fw.close()
            
     
-def newPredict():
+def newPredict(trend_cols,residual_cols):
     # residual_predict_y = model_predict(residual_model_path, 0)
     # residual_dic = getResidualdic()#直接根据先前记录将时间序列都预测出来
     # residual_dic = predictfromData(id, direction)#根据测试前2个小时记录预测后两个小时
-    trend_predict_y = model_predict(trend_model_path, 0)
+    # trend_predict_y = model_predict(trend_model_path, 0)
+    residual_predict_y = model_predict(residual_model_path, 1,residual_cols)
+    trend_predict_y = model_predict(trend_model_path, 0, trend_cols)
     predict_intervals = predict_data['interval']
     predict_dates = predict_data['date'] 
     seasonal = pd.read_csv(seasonal_path, encoding='utf-8')
@@ -186,43 +213,31 @@ def newPredict():
     l = len(trend_predict_y)
     predicted_ys = []
     for i in range(l):
-        predicted_y =  trend_predict_y[i] + seasonal_dic[predict_intervals[i]]+residual_dic[predict_dates[i]][predict_intervals[i]]
+        predicted_y1 =  trend_predict_y[i] + seasonal_dic[predict_intervals[i]]#+residual_predict_y[i]#+residual_dic[predict_dates[i]][predict_intervals[i]]
+        predicted_y2 =  trend_predict_y[i] + seasonal_dic[predict_intervals[i]]+residual_predict_y[i]
+        predicted_y =(predicted_y1+predicted_y2)/2
         predicted_ys.append(predicted_y)
     predicted_ys = np.array(predicted_ys)
     return predicted_ys, predict_intervals, predict_dates
 
-def predict_main(id,direction):
+def predict_main(id,direction,trend_cols,residual_cols):
     setid_direction(id, direction)
-    # writeResTofile()
-    predicted_ys,ground_ys,d = predict()
-    v1 = pd.DataFrame(predicted_ys)
-    v2 = pd.DataFrame(ground_ys) 
-    t = pd.DatetimeIndex(d)
-    v1.index = t
-    v2.index = t
-    plt.plot(v1)
-    plt.plot(v2,color = 'red')
-    plt.show()
-    print(my_custom_loss_func(ground_ys, predicted_ys))
+    writeResTofile(trend_cols,residual_cols)
+    # predicted_ys,ground_ys,d = predict(trend_cols,residual_cols)
+    # v1 = pd.DataFrame(predicted_ys)
+    # v2 = pd.DataFrame(ground_ys) 
+    # t = pd.DatetimeIndex(d)
+    # v1.index = t
+    # v2.index = t
+    # plt.plot(v1)
+    # plt.plot(v2,color = 'red')
+    # plt.show()
+    # print(my_custom_loss_func(ground_ys, predicted_ys))
     
     
     
 if __name__ == "__main__":
-    predicted_ys,ground_ys,d = predict()
-    v1 = pd.DataFrame(predicted_ys)
-    v2 = pd.DataFrame(ground_ys) 
-    t = pd.DatetimeIndex(d)
-    v1.index = t
-    v2.index = t
-    print(v1)
-    # plt.plot(t,v1,'o')
-    # plt.plot(t,v2,'o', color='red')
-    plt.plot(v1)
-    plt.plot(v2,color = 'red')
-    plt.show()
-    print(my_custom_loss_func(ground_ys, predicted_ys))
-    # 
-    # writeResTofile()
+    predict_main(3,1)
     
     
         

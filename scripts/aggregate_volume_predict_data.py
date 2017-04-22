@@ -7,7 +7,7 @@ from commonLib import *
 
 days = {7:31,8:31,9:30,10:31,11:30,12:31}
 intervals = np.array([18,19,20,21,22,23,45,46,47,48,49,50])
-# intervals = np.array([24,25,26,27,28,29,51,52,53,54,55,56])
+intervals = np.array([24,25,26,27,28,29,51,52,53,54,55,56])
 
 
 # weather_norm_path = "F:/kdd/dataSets/training/norm_weather (table 7)_training.csv"

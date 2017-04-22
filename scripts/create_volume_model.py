@@ -13,6 +13,7 @@ from sklearn.ensemble import RandomForestRegressor
 from sklearn.model_selection import GridSearchCV
 import matplotlib.pylab as plt
 from sklearn.ensemble import GradientBoostingRegressor
+from timeseriescase import *
 
 residual_path = "F:/kdd/dataSets/training/residual_norm.csv"
 trend_path = "F:/kdd/dataSets/training/trend_norm.csv"
@@ -63,8 +64,12 @@ def creat_model(source_path, modle_path, isResidual):
     print(scores)
     
 def create_main():
-    creat_model(residual_path, residual_model_path, 1)
-    creat_model(trend_path, trend_model_path, 0)
+    # creat_model(residual_path, residual_model_path, 1)
+    # creat_model(trend_path, trend_model_path, 0)
+    trend_cols = selectfeature(trend_path, 0)
+    residual_cols = selectfeature(residual_path, 1)
+    # train_rnn()
+    return trend_cols,residual_cols
     
     
 def selectfeature(source_path, isResidual):
@@ -81,45 +86,61 @@ def selectfeature(source_path, isResidual):
         x_selected = clf.transform(x,threshold = 0.04)
     else:
         x_selected = clf.transform(x,threshold = 0.01)
-    print(x_selected.shape)
-    if isResidual:
-        plt.plot(y)
-        plt.show()
-    # creat_model(x_selected, y)
+    featurenums = x_selected.shape[1]
+    feature_dic = {}
+    for f in range(featurenums):
+        feature_dic[cols[indices[f]]] = 1
+    print(feature_dic)
+    selected_cols=[]
+    for c in cols:
+        if c in feature_dic:
+            selected_cols.append(c)
+    print(selected_cols)
     
-def creat_model(x,y):
+    print(x_selected.shape)
+    creat_model1(x_selected, y, isResidual)
+    return selected_cols
+    
+def creat_model1(x,y, isResidual):
     # clf = SVR(C=1.0, epsilon=0.1)
     sample_leaf_options = [1,5,10,50,100,200,500]
 
     # for leaf_size in sample_leaf_options :
-    clf = RandomForestRegressor(n_estimators = 200, oob_score = True, n_jobs = -1,random_state =50,
-                                max_features = "auto", min_samples_leaf = 10)
+    if isResidual:
+        clf = SVR(C=1.0, epsilon=0.1)
+    else:
+        clf = RandomForestRegressor(n_estimators = 200, oob_score = True, n_jobs = -1,random_state =50,
+                                    max_features = "auto", min_samples_leaf = 10)
 
     clf.fit(x,y)
     score = make_scorer(my_custom_loss_func, greater_is_better=False)
     scores = -cross_val_score(clf, x, y,cv=10,scoring=score)
     print(scores)
-    joblib.dump(clf, 'F:/kdd/scripts/rfvolume.pkl')
+    if isResidual:
+        joblib.dump(clf, residual_model_path)
+    else:
+        joblib.dump(clf, trend_model_path)
+    
     # clf = RandomForestRegressor(n_estimators=10,oob_score = TRUE,n_jobs = -1,random_state =1)
     # clf.fit(x,y)
     # clf =  GradientBoostingRegressor(n_estimators=100,learning_rate = 0.1,max_features = None, max_depth = 3, random_state = 1)
-    clf = SVR(C=1.0, epsilon=0.1)
+    
     # clf = AdaBoostRegressor(n_estimators=100, base_estimator=rg,learning_rate=1)
-    clf.fit(x, y)   
-    score = make_scorer(my_custom_loss_func, greater_is_better=False)
-    scores = -cross_val_score(clf, x, y,cv=10,scoring=score)
-    print(scores)
-    joblib.dump(clf, 'F:/kdd/scripts/svrvolume.pkl')
-    clf =  GradientBoostingRegressor(n_estimators=100,learning_rate = 0.1,max_features = None, max_depth = 3, random_state = 1)
-    clf.fit(x,y)
-    score = make_scorer(my_custom_loss_func, greater_is_better=False)
-    scores = -cross_val_score(clf, x, y,cv=10,scoring=score)
-    print(scores)
-    joblib.dump(clf, 'F:/kdd/scripts/gbtvolume.pkl')
+    # clf.fit(x, y)   
+    # score = make_scorer(my_custom_loss_func, greater_is_better=False)
+    # scores = -cross_val_score(clf, x, y,cv=10,scoring=score)
+    # print(scores)
+    # joblib.dump(clf, 'F:/kdd/scripts/svrvolume.pkl')
+    # clf =  GradientBoostingRegressor(n_estimators=100,learning_rate = 0.1,max_features = None, max_depth = 3, random_state = 1)
+    # clf.fit(x,y)
+    # score = make_scorer(my_custom_loss_func, greater_is_better=False)
+    # scores = -cross_val_score(clf, x, y,cv=10,scoring=score)
+    # print(scores)
+    # joblib.dump(clf, 'F:/kdd/scripts/gbtvolume.pkl')
     
 if __name__ == "__main__":
     # creat_model('F:/kdd/dataSets/training/voulumn_aggregate_data.csv',"",0)
-    selectfeature(residual_path, 1)
+    # selectfeature(residual_path, 1)
     selectfeature(trend_path, 0)
     
     
