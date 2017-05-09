@@ -3,9 +3,9 @@ import pandas as pd
 import numpy as np
 import math
 from datetime import datetime
+import sys
+sys.path.append("F:/kdd/scripts/common")
 from commonLib import *
-
-days = {7:31,8:31,9:30,10:31,11:30,12:31}
 
 weather_norm_path = ""
 routes_norm_path= ""
@@ -15,7 +15,6 @@ aggregate_path = ""
 weather_info = ""
 routes_info = ""
 sources_info = ""
-
 
 def get_weather_info():
     weather_dic = {}

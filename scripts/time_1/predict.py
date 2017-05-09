@@ -14,12 +14,11 @@ def get_source_data(isValidation):
     data = pd.read_csv(data_path,encoding='utf-8')
     # X = data[['norm_time','holiday', 'week','average_width','total_length','pressure','sea_pressure','wind_direction','temperature','rel_humidity','precipitation']]
     tempcols = []
-    # for i in range(20):
-        # tempcols.append(str(i))
-    tempcols.append(str(1))
+    for i in range(7):
+        tempcols.append(str(i))
     tempcols = np.array(tempcols)
     # restcols = np.array(['average_width','total_length','pressure','sea_pressure','wind_direction','temperature','rel_humidity'])
-    restcols = np.array(['norm_time', 'average_width','total_length','pressure','sea_pressure','wind_direction','temperature','rel_humidity'])
+    restcols = np.array(['holiday', 'norm_time', 'average_width','total_length','pressure','sea_pressure','wind_direction','temperature','rel_humidity','precipitation'])
     cols = np.hstack((tempcols, restcols))
     X = data[cols]
     

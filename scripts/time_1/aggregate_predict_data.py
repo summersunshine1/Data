@@ -3,9 +3,9 @@ import pandas as pd
 import numpy as np
 import math
 from datetime import datetime
+import sys
+sys.path.append("F:/kdd/scripts/common")
 from commonLib import *
-
-days = {7:31,8:31,9:30,10:31,11:30,12:31}
 
 weather_norm_path = "F:/kdd/dataSets/testing_phase1/norm_weather (table 7)_test1.csv"
 routes_norm_path= "F:/kdd/dataSets/training/norm_widthandlength.csv"
@@ -50,17 +50,8 @@ def get_routes_info():
         routes_dic[id]['average_width'] = average_widths[i]
     return routes_dic
     
-def getnormtime():
-    dic = {}
-    norm_intervals = zeroNormalize(intervals)
-    # norm_intervals = (intervals - 0)/(72)
-    l = len(intervals)
-    for i in range(l):
-        dic[intervals[i]] = norm_intervals[i]
-    return dic
-    
 def aggregate():
-    norm_time_dic = getnormtime()
+    norm_time_dic = getnormtime(intervals)
     weather_dic = get_weather_info()
     routes_dic = get_routes_info()
     

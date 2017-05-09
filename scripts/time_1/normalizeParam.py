@@ -2,6 +2,8 @@
 import pandas as pd
 import numpy as np
 from datetime import datetime
+import sys
+sys.path.append("F:/kdd/scripts/common")
 from commonLib import *
 # from sklearn import preprocessing
 
@@ -16,13 +18,13 @@ weather_norm_path = "F:/kdd/dataSets/training/norm_weather (table 7)_training.cs
 routes_norm_path= "F:/kdd/dataSets/training/norm_widthandlength.csv"
 sources_norm_path = "F:/kdd/dataSets/training/norm_avg_travel_time.csv"
 
-# weather_path = "F:/kdd/dataSets/testing_phase1/weather (table 7)_test1.csv"
-# sources_path = "F:/kdd/dataSets/testing_phase1/test1_20min_avg_travel_time.csv"
-# weather_info = pd.read_csv(weather_path,encoding='utf-8')
-# sources_info = pd.read_csv(sources_path,encoding='utf-8')
+weather_path = "F:/kdd/dataSets/testing_phase1/weather (table 7)_test1.csv"
+sources_path = "F:/kdd/dataSets/testing_phase1/test1_20min_avg_travel_time.csv"
+weather_info = pd.read_csv(weather_path,encoding='utf-8')
+sources_info = pd.read_csv(sources_path,encoding='utf-8')
 
-# weather_norm_path = "F:/kdd/dataSets/testing_phase1/norm_weather (table 7)_test1.csv"
-# sources_norm_path = "F:/kdd/dataSets/testing_phase1/norm_avg_travel_time.csv"
+weather_norm_path = "F:/kdd/dataSets/testing_phase1/norm_weather (table 7)_test1.csv"
+sources_norm_path = "F:/kdd/dataSets/testing_phase1/norm_avg_travel_time.csv"
 
 
     # return preprocessing.scale(arr)
