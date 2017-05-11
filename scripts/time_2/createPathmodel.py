@@ -2,7 +2,6 @@
 import pandas as pd
 import numpy as np
 # from sklearn.cross_validation import cross_val_score
-import seaborn as sns
 from sklearn.linear_model import LinearRegression,ElasticNet,ElasticNetCV
 from sklearn.model_selection import cross_val_score,KFold, train_test_split, GridSearchCV
 from sklearn.metrics import make_scorer
@@ -22,20 +21,16 @@ import warnings
 from sklearn.model_selection import GridSearchCV
 
 import sys
-sys.path.append("F:/kdd/scripts/common")
+sys.path.append("E:/kdd/Data/scripts/common")
 from commonLib import *
                         
 warnings.filterwarnings("ignore")
 data_path = "F:/kdd/dataSets/training/traveltime_totaldata.csv"
+data_path = "E:/kdd/Data/dataSets/training/discrete_totaldata.csv"
 
 def getcols():
-    tempcols = []
-    for i in range(7):
-        tempcols.append(str(i))
-    tempcols = np.array(tempcols)
-    restcols = np.array(['holiday', 'norm_time', 'pressure','sea_pressure','wind_direction','temperature','rel_humidity','precipitation'])
-    cols = np.hstack((tempcols, restcols))
-    return cols
+    data = getdata()
+    return data.columns.values
     
 def getdata():
     data = pd.read_csv(data_path,encoding='utf-8')
@@ -175,7 +170,7 @@ def creat_model(x,y,index):
     # scores = -cross_val_score(clf, x, y,cv=10,scoring=score)
     # print(scores)
     path = 'F:/kdd/scripts/model/rfr'+str(index)+'.pkl'
-    joblib.dump(clf, path)
+    # joblib.dump(clf, path)
     # clf = RandomForestRegressor(n_estimators = 200, oob_score = True, n_jobs = -1,random_state =50,
                                 # max_features = "auto", min_samples_leaf = 10)
 
