@@ -3,9 +3,12 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
 import math
+from getPath import *
 
-link_path = "F:/kdd/dataSets/training/links (table 3).csv"
-routes_path = "F:/kdd/dataSets/training/routes (table 4).csv"
+pardir = getparentdir()
+
+link_path = pardir + "/dataSets/training/links (table 3).csv"
+routes_path = pardir +"/dataSets/training/routes (table 4).csv"
 links = pd.read_csv(link_path,encoding='utf-8')
 routes = pd.read_csv(routes_path,encoding='utf-8')
     

@@ -4,7 +4,7 @@ import numpy as np
 import math
 from datetime import datetime
 import sys
-sys.path.append("F:/kdd/scripts/common")
+sys.path.append("E:/kdd/Data/scripts/common")
 from commonLib import *
 
 weather_norm_path = ""
