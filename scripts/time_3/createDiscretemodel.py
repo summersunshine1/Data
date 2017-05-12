@@ -66,7 +66,7 @@ def selectfeature(x,y,index):
     indices = np.argsort(importance)[::-1]
     for f in range(6):
         print("%2d) %-*s %f" %(f+1, 30,cols[indices[f]],importance[indices[f]]))
-    x_selected = clf.transform(x,threshold = importance[indices[5]])
+    x_selected = clf.transform(x,threshold = importance[indices[10]])
     
     featurenums = x_selected.shape[1]
     feature_dic = {}
