@@ -8,7 +8,7 @@ from sklearn.metrics import make_scorer
 from sklearn.svm import SVR,LinearSVR
 from sklearn.externals import joblib
 from sklearn.ensemble import RandomForestRegressor
-from xgboost import XGBClassifier
+# from xgboost import XGBClassifier
 from sklearn.ensemble import AdaBoostRegressor
 from sklearn.tree import DecisionTreeRegressor
 from sklearn.ensemble import GradientBoostingRegressor
@@ -16,7 +16,7 @@ from sklearn.metrics import roc_auc_score
 
 from pandas import read_csv
 from sklearn.feature_selection import RFE
-import xgboost as xgb
+# import xgboost as xgb
 import warnings
 from sklearn.model_selection import GridSearchCV
 
@@ -30,7 +30,9 @@ data_path = "E:/kdd/Data/dataSets/training/discrete_totaldata.csv"
 
 def getcols():
     data = getdata()
-    return data.columns.values
+    columns = data.columns.values
+    cols = columns[1:-2]   
+    return cols
     
 def getdata():
     data = pd.read_csv(data_path,encoding='utf-8')
@@ -147,28 +149,28 @@ def creat_model(x,y,index):
     # path = 'F:/kdd/scripts/model/svr'+str(index)+'.pkl'
     # joblib.dump(clf, path)
     
-    clf = xgb.XGBRegressor(n_estimators = 1000, learning_rate=0.05).fit(x,y)
-    score = make_scorer(my_custom_loss_func, greater_is_better=False)
-    scores = -cross_val_score(clf, x, y,cv=10,scoring=score)
-    print(scores)
+    # clf = xgb.XGBRegressor(n_estimators = 1000, learning_rate=0.05).fit(x,y)
+    # score = make_scorer(my_custom_loss_func, greater_is_better=False)
+    # scores = -cross_val_score(clf, x, y,cv=10,scoring=score)
+    # print(scores)
     
     
-    # tuned_parameters = [{'epsilon':[0.1,0.2,0.3],'C': [1, 5, 10,15]}]
-    # sample_leaf_options = [1,5,10,50,100,200,500]
-    # gs = GridSearchCV(estimator = LinearSVR(), param_grid = tuned_parameters, cv = 10)
-    # gs = gs.fit(x,y)
-    # print(gs.best_params_)
-    # params = gs.best_params_
+    tuned_parameters = [{'epsilon':[0.1,0.2,0.3],'C': [1, 5, 10,15]}]
+    sample_leaf_options = [1,5,10,50,100,200,500]
+    gs = GridSearchCV(estimator = SVR(), param_grid = tuned_parameters, cv = 10)
+    gs = gs.fit(x,y)
+    print(gs.best_params_)
+    params = gs.best_params_
    
     # joblib.dump(clf, 'F:/kdd/scripts/rf.pkl')
     # clf = RandomForestRegressor(n_estimators=10,oob_score = TRUE,n_jobs = -1,random_state =1)
     # clf.fit(x,y)
     # clf =  GradientBoostingRegressor(n_estimators=100,learning_rate = 0.1,max_features = None, max_depth = 3, random_state = 1)
-    # clf = LinearSVR(epsilon = params['epsilon'], C = params['C'])
-    # clf.fit(x, y)   
-    # score = make_scorer(my_custom_loss_func, greater_is_better=False)
-    # scores = -cross_val_score(clf, x, y,cv=10,scoring=score)
-    # print(scores)
+    clf = SVR(epsilon = params['epsilon'], C = params['C'])
+    clf.fit(x, y)   
+    score = make_scorer(my_custom_loss_func, greater_is_better=False)
+    scores = -cross_val_score(clf, x, y,cv=10,scoring=score)
+    print(scores)
     path = 'F:/kdd/scripts/model/rfr'+str(index)+'.pkl'
     # joblib.dump(clf, path)
     # clf = RandomForestRegressor(n_estimators = 200, oob_score = True, n_jobs = -1,random_state =50,

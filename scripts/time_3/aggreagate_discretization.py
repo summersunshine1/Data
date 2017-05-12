@@ -24,8 +24,18 @@ def getweathercoder(weatherarr, date, phase):
         for c in w[date][phase]:
             coder.append(c)
     return coder
+    
+def comparedate(date,keydate):
+    if date == keydate:
+        return date
+    else:
+        if '-' in keydate:
+            date = date.replace('/','-')
+        else:
+            date = date.replace('-','/')
+        return date
 
-def aggregate():
+def aggregate(isval):
     links = getlinks()
     columes = []
     columes.append('"linkid"')
@@ -34,7 +44,10 @@ def aggregate():
     totallen = 7+72
     weatherarr = []
     for c in globalcolumes:
-        traindic,_ = get_Discrete_Weather(c, 10)
+        if isval:
+            _,traindic = get_Discrete_Weather(c, 10)
+        else:
+            traindic,_ = get_Discrete_Weather(c, 10)
         weatherarr.append(traindic)
         totallen += 10  
     for i in range(totallen):
@@ -49,9 +62,12 @@ def aggregate():
         avg_travel_times = np.array(sources_info['avg_travel_time'][sources_info['linkid']==link])
         time_intervals = np.array(sources_info['interval'][sources_info['linkid']==link])         
         length = len(dates)
-        
+        keys = list(weatherarr[0].keys())
         for i in range(length):
             phase,date = getphase(time_intervals[i], dates[i])
+            date = comparedate(date, keys[0])
+            # print(date)
+            # print(keys[0])
             if not date in weatherarr[0]:
                 continue
             if not phase in weatherarr[0][date]:
@@ -90,7 +106,7 @@ def aggregate_main(isVal):
         aggregate_path = pardir+"/dataSets/testing_phase1/discrete_totaldata.csv"
     
     sources_info = pd.read_csv(sources_norm_path,encoding='utf-8')
-    aggregate()
+    aggregate(isVal)
     
 if __name__=="__main__":
-    aggregate_main(0)
+    aggregate_main(1)

@@ -49,7 +49,11 @@ def linearNormalize(arr):
     return (arr-min)/(max-min)
             
 def getweekday(date):
-    trace_time = datetime.strptime(date, "%Y/%m/%d")
+    if('/' in date):
+        trace_time = datetime.strptime(date, "%Y/%m/%d")
+    else:
+        trace_time = datetime.strptime(date, "%Y-%m-%d")
+    
     weekday = trace_time.strftime("%w")
     return weekday
 
