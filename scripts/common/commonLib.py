@@ -179,6 +179,30 @@ def get_path():
     dic['C-3'] = [7,4,5]
     dic['C-1'] = [7,4,6]
     return dic
+    
+def getsection():
+    resdic = {}
+    tolls = get_intersection_toll()
+    dic = get_path()
+    linkseq = get_link_seperate_path()
+    for toll in tolls:
+        newarr = []
+        arr = dic[toll]
+        for a in arr:
+            for link in linkseq[a]:
+                newarr.append(link)
+        resdic[toll] = newarr
+    return resdic
+    
+def getweatherarr(isval = 1):
+    weatherarr = []
+    for c in globalcolumes:
+        if isval:
+            _,traindic = get_Discrete_Weather(c, 10)
+        else:
+            traindic,_ = get_Discrete_Weather(c, 10)
+        weatherarr.append(traindic)
+    return weatherarr  
 
     
 

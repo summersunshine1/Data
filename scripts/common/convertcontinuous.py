@@ -1,10 +1,13 @@
+from getPath import *
+pardir = getparentdir()
+commonpath = pardir + "/scripts/common"
 import sys
-sys.path.append('E:/kdd/Data/scripts/common')
+sys.path.append(commonpath)
 from commonLib import *
 import pandas as pd
 
-weather_train_path = "E:/kdd/Data/dataSets/training/weather (table 7)_training_update.csv"
-weather_test_path = "E:/kdd/Data/dataSets/testing_phase1/weather (table 7)_test1.csv"
+weather_train_path = pardir+"/dataSets/training/weather (table 7)_training_update.csv"
+weather_test_path = pardir+"/dataSets/testing_phase1/weather (table 7)_test1.csv"
 
 def get_train_test(colume, train_data, test_data):
     train_data = [d for d in train_data[colume]]

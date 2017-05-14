@@ -21,13 +21,13 @@ def readData(path):
     # plt.hist(df['precipitation'], bins = 10)#, range =(df['rel_humidity'].min(),df['rel_humidity'].max()))
     names = data.columns.values
     for i in range(2,len(names)):
-        plt.hist(df[names[i]], bins = 5)#, range =(df['rel_humidity'].min(),df['rel_humidity'].max()))
-        plt.show()
-        # for j in range(i+1, len(names)):
-            # title = names[i]+'-'+names[j]
-            # plt.scatter(data[names[i]],data[names[j]])
-            # plt.title(title)
-            # plt.show()
+        # plt.hist(df[names[i]], bins = 5)#, range =(df['rel_humidity'].min(),df['rel_humidity'].max()))
+        # plt.show()
+        for j in range(i+1, len(names)):
+            title = names[i]+'-'+names[j]
+            plt.scatter(data[names[i]],data[names[j]])
+            plt.title(title)
+            plt.show()
         # arr = [a for a in range(10)]
         # print(pd.cut(df[names[i]],10, labels = arr))
     
