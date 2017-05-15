@@ -84,7 +84,7 @@ def aggregate():
     fw.close()
     
     
-def aggregate_predict_path_main(isVal):
+def `(isVal):
     global intervals
     if isVal:
         intervals = np.array([18,19,20,21,22,23,45,46,47,48,49,50])

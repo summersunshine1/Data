@@ -7,8 +7,12 @@ Calculate volume for each 20-minute time window.
 import math
 from datetime import datetime,timedelta
 
+from getPath import *
+
+pardir = getparentdir()
+
 file_suffix = '.csv'
-path = 'F:/kdd/dataSets/testing_phase1/'  # set the data directory
+path = ''  # set the data directory
 
 def avgVolume(in_file):
     out_suffix = '_20min_avg_volume'
@@ -61,13 +65,21 @@ def avgVolume(in_file):
                fw.writelines(out_line)
     fw.close()
 
-def main():
-
-    in_file = 'volume(table 6)_test1'
+def main(istest):
+    global path
+    if istest:
+        path = pardir + "/dataSets/testing_phase1/"
+        in_file = 'volume(table 6)_test1'
+        
+    else:
+        path = pardir + "/dataSets/training/"
+        in_file = 'volume(table 6)_training'
+    
+    
     avgVolume(in_file)
 
 if __name__ == '__main__':
-    main()
+    main(0)
 
 
 
