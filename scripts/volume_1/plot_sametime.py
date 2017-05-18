@@ -43,7 +43,9 @@ def getvolumeinfo():
         resdic[id][time].append(float(volumes[i]))
     return resdic,holidaydic
     
-def addTestInfo(resdic, holidaydic):
+def addTestInfo():
+    resdic = {}
+    holidaydic = {}
     info = pd.read_csv(volume_test_path, encoding='utf-8')
     tollgate_ids = info["tollgate_id"]
     directions = info["direction"]

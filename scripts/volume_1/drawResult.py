@@ -1,16 +1,19 @@
 import pandas as pd
 from datetime import datetime,timedelta
 import numpy as np
-from statsmodels.tsa.stattools import adfuller
+# from statsmodels.tsa.stattools import adfuller
 import matplotlib.pylab as plt
+from getPath import *
+pardir = getparentdir()
 
-volume_path_1 = "F:/kdd/res/predicted_volume2-1.csv"
+
+volume_path_1 = pardir+"/res/predicted_volume2-1.csv"
 volume_data_1 = pd.read_csv(volume_path_1, encoding='utf-8')
 
-volume_path_2 = "F:/kdd/res/predicted_volume2-10.csv"
+volume_path_2 = pardir+"/res/predicted_volume2-10.csv"
 volume_data_2 = pd.read_csv(volume_path_2, encoding='utf-8')
 
-volume_path_4 = "F:/kdd/res/predicted_volume2-11.csv"
+volume_path_4 = pardir+"/res/predicted_volume2-12.csv"
 volume_data_4 = pd.read_csv(volume_path_4, encoding='utf-8')
 
 ids = [1,2,3]

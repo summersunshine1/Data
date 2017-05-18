@@ -32,12 +32,12 @@ class KnnDtw(object):
         item is skipped. Implemented by x[:, ::subsample_step]
     """
     
-    def __init__(self, n_neighbors=5, max_warping_window=5, subsample_step=1):
+    def __init__(self, n_neighbors=5, max_warping_window=3, subsample_step=1):
         self.n_neighbors = n_neighbors
         self.max_warping_window = max_warping_window
         self.subsample_step = subsample_step
     
-    def fit(self, x, l):
+    def fit(self, x, l=[]):
         """Fit the model using x as training data and l as class labels
         
         Arguments
@@ -138,11 +138,12 @@ class KnnDtw(object):
             y_s = np.shape(y)
             dm = np.zeros((x_s[0], y_s[0])) 
             dm_size = x_s[0]*y_s[0]
-        
             for i in range(0, x_s[0]):
                 for j in range(0, y_s[0]):
-                    dm[i, j] = self._dtw_distance(x[i, ::self.subsample_step],
-                                                  y[j, ::self.subsample_step])
+                    # temp= np.array(y[j,])
+                    tempy=y[j,]
+                    tempx=x[i,]
+                    dm[i, j] = self._dtw_distance(tempx[::self.subsample_step],tempy[::self.subsample_step])
                     # Update progress bar
                     dm_count += 1
         
@@ -178,12 +179,18 @@ class KnnDtw(object):
         mode_proba = mode_data[1]/self.n_neighbors
 
         return mode_label.ravel(), mode_proba.ravel()
-
+        
+    def regress(self, x):
+        dm = self._dist_matrix(x, self.x)
+        knn_idx = dm.argsort()[:, :self.n_neighbors]
+        return knn_idx,dm[0]
+        
 if __name__=='__main__':
         
     time = np.linspace(0,20,1000)
     amplitude_a = 5*np.sin(time)
     amplitude_b = 3*np.sin(time + 1)
+    print(amplitude_a)
 
     m = KnnDtw()
     distance = m._dtw_distance(amplitude_a, amplitude_b)

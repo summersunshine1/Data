@@ -167,6 +167,16 @@ def get_time_from_interval(date,interval):
     end_time_window = start_time_window + timedelta(minutes=20)
     return start_time_window,end_time_window
     
+def get_time_from_datetime(date, time):
+    trace_time = datetime.strptime(date, "%Y/%m/%d")
+    trace_hour = datetime.strptime(time, "%H:%M:%S")
+    year = trace_time.year
+    month = trace_time.month
+    day = trace_time.day
+    start_time_window = datetime(year, month, day, trace_hour.hour, trace_hour.minute, 0)
+    end_time_window = start_time_window + timedelta(minutes=20)
+    return start_time_window,end_time_window
+    
 def get_intersection_toll():
     return ['A-2','A-3','B-3','B-1','C-3','C-1']
     
@@ -202,7 +212,33 @@ def getweatherarr(isval = 1):
         else:
             traindic,_ = get_Discrete_Weather(c, 10)
         weatherarr.append(traindic)
-    return weatherarr  
+    return weatherarr 
+    
+def getPredicttimes(time1="8:0:0",time2="17:0:0"):
+    # time1 = "8:0:0"
+    # time2 = "17:0:0"
+    times = []
+    trace_time1= datetime.strptime(time1, "%H:%M:%S")
+    trace_time2= datetime.strptime(time2, "%H:%M:%S")
+    for i in range(6):
+        times.append(time1)
+        trace_time1 = trace_time1+timedelta(minutes = 20)
+        time1 = str(trace_time1.hour)+':'+str(trace_time1.minute)+':'+str(trace_time1.second)
+    for i in range(6):
+        times.append(time2)
+        trace_time2 = trace_time2+timedelta(minutes = 20)
+        time2 = str(trace_time2.hour)+':'+str(trace_time2.minute)+':'+str(trace_time2.second)
+    return times
+
+def getfollowingtime(time1):
+    times = []
+    trace_time1= datetime.strptime(time1, "%H:%M:%S")
+    for i in range(6):
+        times.append(time1)
+        trace_time1 = trace_time1+timedelta(minutes = 20)
+        time1 = str(trace_time1.hour)+':'+str(trace_time1.minute)+':'+str(trace_time1.second)
+    return times
+    
 
     
 
