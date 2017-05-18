@@ -41,6 +41,12 @@ def zeroNormalize(arr):
         return arr
     return (arr-mu)/sigma
     
+def normalizebymean(arr,mean, std):
+    if std == 0:
+        return arr
+    arr = np.array(arr)
+    return (arr-mean)/std
+    
 def linearNormalize(arr):
     max = np.amax(arr)
     min = np.amin(arr)

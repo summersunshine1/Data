@@ -28,6 +28,7 @@ def cmp_datetime(a, b):
 def getbasicinfo():
     resdic,holidaydic = getvolumeinfo()
     ids = ['1-0','1-1','2-0','3-0','3-1']
+
     for id in ids:
         times = resdic[id]
         for time in times:
@@ -69,9 +70,22 @@ def getbasicinfo():
         plt.show()
 
 def getnearneigbours():
+    ids = ['1-0','1-1','2-0','3-0','3-1']
     finalresultdic = {}
     newresdic,holidaydic = getvolumeinfo()
-    ids = ['1-0','1-1','2-0','3-0','3-1']
+    totalresdic, _ = addTestInfo(newresdic,holidaydic)
+    mean_value_dic = {}
+    std_value_dic = {}
+    for id in ids:
+        times = totalresdic[id]
+        if not id in mean_value_dic:
+            mean_value_dic[id]={}
+        if not id in std_value_dic:
+            std_value_dic[id]={}
+        for time in times:
+            mean_value_dic[id][time] = np.mean(np.array(totalresdic[id][time]))
+            std_value_dic[id][time] = np.std(np.array(totalresdic[id][time]))
+
     testdic,_ = addTestInfo()
     resdic={}
     for id in ids:
@@ -79,7 +93,7 @@ def getnearneigbours():
         if not id in resdic:
             resdic[id]={}
         for time in times:
-            resdic[id][time] = zeroNormalize(newresdic[id][time])
+            resdic[id][time] = normalizebymean(newresdic[id][time], mean_value_dic[id][time], std_value_dic[id][time])
     test_times = getPredicttimes()
     train_times = getPredicttimes("6:0:0","15:0:0")
     for id in ids:
@@ -100,10 +114,10 @@ def getnearneigbours():
                     continue
                 if not train_times[i] in testdic[id]:
                     continue
-                arr = testdic[id][train_times[i]]
+                arr = normalizebymean(testdic[id][train_times[i]], mean_value_dic[id][train_times[i]], std_value_dic[id][train_times[i]])
                 temp.append(arr)
             temp = np.array(temp)
-            finalresultdic[id][time] = np.mean(temp,axis=0)
+            finalresultdic[id][time] = np.mean(temp,axis=0)*std_value_dic[id][time]+mean_value_dic[id][time]
                 
             # fig = plt.figure()
             # ax = plt.subplot(111)
