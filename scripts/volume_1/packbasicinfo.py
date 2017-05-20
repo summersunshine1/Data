@@ -32,7 +32,7 @@ def getbasicinfo():
     for id in ids:
         times = resdic[id]
         for time in times:
-            resdic[id][time] = zeroNormalize(resdic[id][time])
+            resdic[id][time] = np.log(resdic[id][time])
       
     predict_times = []
     for id in ids:
@@ -153,6 +153,7 @@ def writeResTofile(finalresultdic):
     
  
 if __name__ == "__main__":
-    finalresultdic = getnearneigbours()
-    writeResTofile(finalresultdic)
+    getbasicinfo()
+    # finalresultdic = getnearneigbours()
+    # writeResTofile(finalresultdic)
     # file_path = 
