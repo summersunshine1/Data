@@ -32,10 +32,13 @@ def getbasicinfo():
     for id in ids:
         times = resdic[id]
         for time in times:
-            resdic[id][time] = np.log(resdic[id][time])
+            oldv = resdic[id][time] 
+            resdic[id][time] = zeroNormalize(resdic[id][time])
       
     predict_times = []
     for id in ids:
+        if id == '2-0':
+            continue
         times = resdic[id]
         times = sorted(times.items(),key = functools.cmp_to_key(cmp_datetime))
         keys = []
@@ -83,6 +86,8 @@ def getnearneigbours():
         if not id in std_value_dic:
             std_value_dic[id]={}
         for time in times:
+            if(len(totalresdic[id][time])==2):
+                print(str(id)+" "+time)
             mean_value_dic[id][time] = np.mean(np.array(totalresdic[id][time]))
             std_value_dic[id][time] = np.std(np.array(totalresdic[id][time]))
 

@@ -170,7 +170,22 @@ def evaluate_models(dataset, p_values, d_values, q_values):
     print('Best ARIMA%s MSE=%.3f' % (best_cfg, best_score))
     
 ts = getData(1,0)
-# print(ts)
+plt.plot(ts,color = 'green')
+plt.plot
+plt.show()
+ts = getData(1,1)
+plt.plot(ts,color = 'green')
+plt.plot
+plt.show()
+ts = getData(2,0)
+plt.plot(ts,color = 'green')
+plt.plot
+plt.show()
+ts = getData(3,0)
+plt.plot(ts,color = 'green')
+plt.plot
+plt.show()
+ts = getData(3,1)
 plt.plot(ts,color = 'green')
 plt.plot
 plt.show()
@@ -182,7 +197,7 @@ plt.show()
 # ts_log_diff = ts_log - ts_log.shift(72)
 # ts_log_diff.dropna(inplace=True)
 # test_stationarity(ts_log_diff)
-ts_log_decompose,trend,seasonal = decompose(ts)
+# ts_log_decompose,trend,seasonal = decompose(ts)
 # ts_log_decompose = ts_log_decompose.diff(1)
 # plt.plot(trend+ts_log_decompose)
 # plt.plot(ts_log_decompose,color = 'red')
@@ -191,14 +206,14 @@ ts_log_decompose,trend,seasonal = decompose(ts)
 # plt.plot(ts_log_decompose, color = 'green')
 # plt.plot(ts_log_decompose)
 # plt.show()
-ts_log_decompose.dropna(inplace=True)
+# ts_log_decompose.dropna(inplace=True)
 # p_values = [0, 1, 2, 4, 6, 8, 10]
 # d_values = range(0, 3)
 # q_values = range(0, 3)
 # evaluate_models(ts_log_decompose, p_values, d_values, q_values)
 
 
-acfplot(ts_log_decompose)
+# acfplot(ts_log_decompose)
 # test_stationarity(ts_log_decompose)
 # ts = getData(1,1)
 # ts_log_decompose,trend,seasonal = decompose(ts)
@@ -229,10 +244,10 @@ acfplot(ts_log_decompose)
 # test_stationarity(ts_log_decompose)
 # 
 
-temp = ts_log_decompose[:-36]
+# temp = ts_log_decompose[:-36]
 # print(temp)
 # print(temp)
-temp.dropna(inplace=True)
+# temp.dropna(inplace=True)
 # temp = np.log(temp)
 # temp.dropna(inplace=True)
 # test_stationarity(temp)
@@ -323,10 +338,10 @@ f.columns = ['volume']
 temp_trend = ts_log_decompose[-36:]
 # temp_trend = temp_trend.diff(1)
 # temp_trend = temp_trend[1:]
-plt.plot(f)
-plt.plot(temp_trend,color='red')
-plt.show()
-print(my_custom_loss_func(temp_trend,f))
+# plt.plot(f)
+# plt.plot(temp_trend,color='red')
+# plt.show()
+# print(my_custom_loss_func(temp_trend,f))
 
 # for i in range(len(time)-1):
     # ground_truth.append(np.exp(temp_trend.loc[time[i]][0]))

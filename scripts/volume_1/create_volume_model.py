@@ -14,6 +14,13 @@ from sklearn.model_selection import GridSearchCV
 import matplotlib.pylab as plt
 from sklearn.ensemble import GradientBoostingRegressor
 from timeseriescase import *
+
+
+from getPath import *
+pardir = getparentdir()
+commonpath = pardir+'/scripts/common'
+import sys
+sys.path.append(commonpath)
 from commonLib import *
 from sklearn.metrics import r2_score
 
@@ -167,7 +174,7 @@ def creat_model1(x,y, isResidual):
     # joblib.dump(clf, 'F:/kdd/scripts/gbtvolume.pkl')
     
 if __name__ == "__main__":
-    # creat_model('F:/kdd/dataSets/training/voulumn_aggregate_data.csv',"",0)
+    # creat_model('F:/kdd/dataSets/training/voulumn_aggregate_data.csv',"",1)
     # selectfeature(residual_path, 1)
     selectfeature(trend_path, 0)
     

@@ -183,6 +183,13 @@ def get_time_from_datetime(date, time):
     end_time_window = start_time_window + timedelta(minutes=20)
     return start_time_window,end_time_window
     
+def get_datetime_from_timearr(times):
+    datetimes = []
+    for time in times:
+        trace_time = datetime.strptime(time, "%Y/%m/%d")
+        datetimes.append(trace_time)
+    return datetimes
+    
 def get_intersection_toll():
     return ['A-2','A-3','B-3','B-1','C-3','C-1']
     
