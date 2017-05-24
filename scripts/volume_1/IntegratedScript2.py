@@ -6,7 +6,7 @@ from create_volume_model import *
 ids = [1,2,3]
 directions = [0,1]
 
-def integrate_main():
+def integrate_main(isvalid):
     for id in ids:
         for direction in directions:
             if id==2 and direction==1:
@@ -17,8 +17,8 @@ def integrate_main():
                 # continue
             handle_main(id, direction)
             trend_cols,residual_cols = create_main()
-            aggregate_main(id, direction)
-            predict_main(id, direction, trend_cols,residual_cols)
+            aggregate_main(id, direction,isvalid)
+            predict_main(id, direction, trend_cols,residual_cols,isvalid)
             
 if __name__ == '__main__':
-    integrate_main()
+    integrate_main(0)

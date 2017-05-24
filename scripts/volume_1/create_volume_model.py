@@ -42,9 +42,9 @@ def get_source_data(norm_data_path, isResidual):
         tempcols.append(str(i))
     tempcols = np.array(tempcols)
     if isResidual:
-        restcols = np.array(['holiday', 'norm_time', 'pressure','sea_pressure','wind_direction','temperature','rel_humidity','precipitation'])
+        restcols = np.array(['norm_time', 'pressure','sea_pressure','wind_direction','temperature','rel_humidity','precipitation'])
     else:
-        restcols = np.array(['holiday', 'norm_time', 'pressure','sea_pressure','wind_direction','temperature','rel_humidity','precipitation'])
+        restcols = np.array([ 'norm_time', 'pressure','sea_pressure','wind_direction','temperature','rel_humidity','precipitation'])
     cols = np.hstack((tempcols, restcols))
     x = data[cols]
     

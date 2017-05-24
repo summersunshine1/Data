@@ -5,15 +5,18 @@ from pandas import DataFrame
 from pandas import concat
 from statsmodels.tsa.ar_model import AR
 import numpy as np
+from getPath import *
 
-residual_path = "F:/kdd/dataSets/training/error_residual.csv"
-dateparse = lambda dates: pd.datetime.strptime(dates, '%Y-%m-%d %H:%M:%S')
-# residual= pd.read_csv(residual_path, parse_dates=['time_window'], index_col='time_window',date_parser=dateparse)
-residual = pd.read_csv(residual_path, encoding = 'utf-8')
+pardir = getparentdir()
+
 ids = [1,2,3]
 directions = [0,1]
 
 def gettrain_error(id, direction):
+    residual_path = pardir+"/dataSets/training/error_residual.csv"
+    dateparse = lambda dates: pd.datetime.strptime(dates, '%Y-%m-%d %H:%M:%S')
+    # residual= pd.read_csv(residual_path, parse_dates=['time_window'], index_col='time_window',date_parser=dateparse)
+    residual = pd.read_csv(residual_path, encoding = 'utf-8')
     data = residual['residual'][(residual['id']==id)&(residual['direction'] == direction)]
     data = [d for d in data]
     finalres = []

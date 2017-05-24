@@ -5,7 +5,14 @@ import math
 from statsmodels.tsa.seasonal import seasonal_decompose
 import statsmodels.api as sm
 import matplotlib.pylab as plt
+from getPath import *
+
+pardir = getparentdir()
+commonpath = pardir + "/scripts/common"
+import sys
+sys.path.append(commonpath)
 from commonLib import *
+
 
 weather_norm_path = "F:/kdd/dataSets/training/norm_weather (table 7)_training.csv"
 weather_info = pd.read_csv(weather_norm_path,encoding='utf-8')
@@ -18,8 +25,8 @@ days = {7:31,8:31,9:30,10:31,11:30,12:31}
 
 data_path = "F:/kdd/dataSets/training/training_20min_avg_volume_update.csv"
 dateparse = lambda dates: pd.datetime.strptime(dates, '%Y-%m-%d %H:%M:%S')
-data = pd.read_csv(data_path, parse_dates=['time_window'], index_col='time_window',date_parser=dateparse)
-
+# data = pd.read_csv(data_path, parse_dates=['time_window'], index_col='time_window',date_parser=dateparse)
+data = pd.read_csv(data_path, encoding='utf-8')
 def writevolume(residual, path):
     fw = open(path, 'w')
     fw.writelines(','.join(['"time_window"', '"residual"']) + '\n')
@@ -30,9 +37,30 @@ def writevolume(residual, path):
         fw.writelines(out_line)
     fw.close()
 
+def oldgetdata(id, direction):
+    return data[['volume']][(data['tollgate_id']==id)&(data['direction'] == direction)]
+    
 def getData(id, direction):
-    partial_data = data[['volume']][(data['tollgate_id']==id)&(data['direction'] == direction)]
-    return partial_data
+    volumes = data['volume'][(data['tollgate_id']==id)&(data['direction'] == direction)]
+    dates = data['time_window'][(data['tollgate_id']==id)&(data['direction'] == direction)]
+    volumes = [v for v in volumes]
+    dates = [d for d in dates]
+    i = len(dates)-1
+    newdates = []
+    newvolumes = []
+    while i>=0:
+        trace_time = datetime.strptime(str(dates[i]), "%Y-%m-%d %H:%M:%S")
+        date = str(trace_time.year)+'/'+str(trace_time.month)+'/'+str(trace_time.day)
+        if not isholiday(date):
+            newdates.append(trace_time)
+            newvolumes.append(volumes[i])
+        i-=1
+    newdates.reverse()
+    newvolumes.reverse()
+    df = pd.DataFrame(newvolumes)
+    timeindex = pd.DatetimeIndex(newdates)
+    df.index = timeindex    
+    return df
 
 def get_weather_info():
     weather_dic = {}
@@ -64,7 +92,7 @@ def writeResidual(residual):
     fw.close()
      
 def decompose(ts):  
-    decomposition = seasonal_decompose(ts, model = "multiplicative", freq=72)
+    decomposition = seasonal_decompose(ts, freq=72)
     trend = decomposition.trend
     seasonal = decomposition.seasonal
     residual = decomposition.resid
@@ -73,6 +101,10 @@ def decompose(ts):
     residual.dropna(inplace=True)
     writeResidual(residual)
     # plt.plot(residual)
+    # plt.plot(seasonal)
+    # print("season")
+    # print(ts)
+    # plt.plot(ts)
     # plt.plot(trend, color='red')
     # plt.show()
     return residual,trend,seasonal

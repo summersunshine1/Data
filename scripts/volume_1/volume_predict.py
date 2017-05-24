@@ -192,7 +192,7 @@ def predict(trend_cols,residual_cols):
             temp_interval = 0
             
         
-        predicted_y1 =  trend_predict_y[i] * seasonal_dic[predict_intervals[i]]#+residual_predict_y[i]#+residual_dic[predict_dates[i]][predict_intervals[i]]
+        predicted_y1 =  trend_predict_y[i] + seasonal_dic[predict_intervals[i]]#+residual_predict_y[i]#+residual_dic[predict_dates[i]][predict_intervals[i]]
         # if id == 2 and direction == 0:
             # predicted_y1 = seasonal_dic[predict_intervals[i]]*non_seasonal[i]
         # predicted_y =(predicted_y2+predicted_y2)/2
@@ -257,7 +257,7 @@ def newPredict(trend_cols,residual_cols):
     predicted_ys = []
     residual_error = gettrain_error(id, direction)
     for i in range(l):
-        predicted_y1 =  trend_predict_y[i]*seasonal_dic[predict_intervals[i]]*residual_error[i]#*residual_predict_y[i]#+residual_dic[predict_dates[i]][predict_intervals[i]]
+        predicted_y1 =  trend_predict_y[i]+seasonal_dic[predict_intervals[i]]+residual_error[i]#*residual_predict_y[i]#+residual_dic[predict_dates[i]][predict_intervals[i]]
         # predicted_y2 =  trend_predict_y[i] + seasonal_dic[predict_intervals[i]]+residual_predict_y[i]
         # predicted_y3 =  seasonal_dic[predict_intervals[i]]+non_seasonal[i]
         # predicted_y =(predicted_y1+predicted_y3)/2
@@ -279,22 +279,24 @@ def writeResidualToFile(filepath, rate, dates, id, direction):
         fw.writelines(out_line)
     fw.close() 
     
-def predict_main(id,direction,trend_cols,residual_cols):
+def predict_main(id,direction,trend_cols,residual_cols, isvalid):
     setid_direction(id, direction)
-    writeResTofile(trend_cols,residual_cols)
-    # predicted_ys,ground_ys,d = predict(trend_cols,residual_cols)
-    # rate = ground_ys/predicted_ys
-    # writeResidualToFile(error_residual_path, rate, d, id, direction)
-    
-    # v1 = pd.DataFrame(predicted_ys)
-    # v2 = pd.DataFrame(ground_ys) 
-    # t = pd.DatetimeIndex(d)
-    # v1.index = t
-    # v2.index = t
-    # plt.plot(v1)
-    # plt.plot(v2,color = 'red')
-    # plt.show()
-    # print(my_custom_loss_func(ground_ys, predicted_ys))
+    if not isvalid:
+        writeResTofile(trend_cols,residual_cols)
+    else:
+        predicted_ys,ground_ys,d = predict(trend_cols,residual_cols)
+        rate = ground_ys-predicted_ys
+        writeResidualToFile(error_residual_path, rate, d, id, direction)
+        
+        v1 = pd.DataFrame(predicted_ys)
+        v2 = pd.DataFrame(ground_ys) 
+        t = pd.DatetimeIndex(d)
+        v1.index = t
+        v2.index = t
+        plt.plot(v1)
+        plt.plot(v2,color = 'red')
+        plt.show()
+        print(my_custom_loss_func(ground_ys, predicted_ys))
     
     
     
