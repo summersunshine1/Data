@@ -11,18 +11,20 @@ from statsmodels.tsa.stattools import acf, pacf
 import statsmodels.api as sm
 from statsmodels.tsa.stattools import arma_order_select_ic
 from sklearn.metrics import mean_squared_error
+from getPath import *
+pardir = getparentdir()
 
-data_path = "F:/kdd/dataSets/training/training_20min_avg_volume_update.csv"
+data_path = pardir +"/dataSets/training/training_20min_avg_volume_update.csv"
 dateparse = lambda dates: pd.datetime.strptime(dates, '%Y-%m-%d %H:%M:%S')
 data = pd.read_csv(data_path, parse_dates=['time_window'], index_col='time_window',date_parser=dateparse)
 
 
-test_data_path = "F:/kdd/dataSets/testing_phase1/test1_20min_avg_volume_update.csv"
+test_data_path = pardir +"/dataSets/testing_phase1/test1_20min_avg_volume_update.csv"
 test_data = pd.read_csv(test_data_path, parse_dates=['time_window'], index_col='time_window',date_parser=dateparse)
 
-residual_path = "F:/kdd/dataSets/training/residual.csv"
-seasonal_path = "F:/kdd/dataSets/training/seasonal.csv"
-trend_path = "F:/kdd/dataSets/training/trend.csv"
+residual_path = pardir +"/dataSets/training/residual.csv"
+seasonal_path = pardir +"/dataSets/training/seasonal.csv"
+trend_path = pardir +"/dataSets/training/trend.csv"
 
 def writevolume(volume, path):
     fw = open(path, 'w')
@@ -69,9 +71,9 @@ def test_stationarity(timeseries):
     print(dfoutput)
     plt.show(block=True)
     
-def decompose(ts_log):
+def decompose(ts_log,freqs):
     
-    decomposition = seasonal_decompose(ts_log,model = "multiplicative",freq=72)
+    decomposition = seasonal_decompose(ts_log,freq=freqs)
 
     trend = decomposition.trend
     seasonal = decomposition.seasonal
@@ -79,22 +81,22 @@ def decompose(ts_log):
     seasonal.dropna(inplace=True)
     trend.dropna(inplace=True)
     residual.dropna(inplace=True)
-    # plt.subplot(411) 
-    # plt.plot(ts_log, label='Original')
-    # plt.legend(loc='best')
-    # plt.subplot(412)
-    # plt.plot(trend, label='Trend')
-    # plt.legend(loc='best')
-    # plt.subplot(413)
-    # plt.plot(seasonal,label='Seasonality')
-    # plt.legend(loc='best')
-    # plt.subplot(414)
-    # plt.plot(residual, label='Residuals')
-    # plt.legend(loc='best')
-    # plt.tight_layout()
+    plt.subplot(411) 
+    plt.plot(ts_log, label='Original')
+    plt.legend(loc='best')
+    plt.subplot(412)
+    plt.plot(trend, label='Trend')
+    plt.legend(loc='best')
+    plt.subplot(413)
+    plt.plot(seasonal,label='Seasonality')
+    plt.legend(loc='best')
+    plt.subplot(414)
+    plt.plot(residual, label='Residuals')
+    plt.legend(loc='best')
+    plt.tight_layout()
     ts_log_decompose = residual
-    plt.plot(seasonal*residual*trend, color = 'blue')
-    plt.plot(ts_log, color = 'red')
+    # plt.plot(seasonal*residual*trend, color = 'blue')
+    # plt.plot(ts_log, color = 'red')
     
 
     plt.show()
@@ -168,27 +170,18 @@ def evaluate_models(dataset, p_values, d_values, q_values):
                 	# print(err)
                 # continue
     print('Best ARIMA%s MSE=%.3f' % (best_cfg, best_score))
-    
-ts = getData(1,0)
-plt.plot(ts,color = 'green')
-plt.plot
-plt.show()
-ts = getData(1,1)
-plt.plot(ts,color = 'green')
-plt.plot
-plt.show()
-ts = getData(2,0)
-plt.plot(ts,color = 'green')
-plt.plot
-plt.show()
-ts = getData(3,0)
-plt.plot(ts,color = 'green')
-plt.plot
-plt.show()
-ts = getData(3,1)
-plt.plot(ts,color = 'green')
-plt.plot
-plt.show()
+
+ids = [1,2,3]
+directions = [0,1]
+for  id in ids:
+    for d in directions:
+        if id == 2 and d == 1:
+            continue
+            
+        ts = getData(id, d)
+        ts_log_decompose,trend,seasonal = decompose(ts,72*7)
+        ts_log_decompose,trend,seasonal = decompose(ts,72)
+
 # test_stationarity(ts)
 
 # ts_log = np.log(ts)
@@ -197,7 +190,7 @@ plt.show()
 # ts_log_diff = ts_log - ts_log.shift(72)
 # ts_log_diff.dropna(inplace=True)
 # test_stationarity(ts_log_diff)
-# ts_log_decompose,trend,seasonal = decompose(ts)
+
 # ts_log_decompose = ts_log_decompose.diff(1)
 # plt.plot(trend+ts_log_decompose)
 # plt.plot(ts_log_decompose,color = 'red')

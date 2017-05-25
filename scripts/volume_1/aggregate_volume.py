@@ -33,7 +33,7 @@ def avgVolume(in_file):
         direction = each_pass[2]
 
         pass_time = each_pass[0]
-        pass_time = datetime.strptime(pass_time, "%Y/%m/%d %H:%M")
+        pass_time = datetime.strptime(pass_time, "%Y-%m-%d %H:%M:%S")
         time_window_minute = int(math.floor(pass_time.minute / 20) * 20)
         #print pass_time
         start_time_window = datetime(pass_time.year, pass_time.month, pass_time.day,
@@ -68,18 +68,18 @@ def avgVolume(in_file):
 def main(istest):
     global path
     if istest:
-        path = pardir + "/dataSets/testing_phase1/"
-        in_file = 'volume(table 6)_test1'
+        path = pardir + "/dataSet_phase2/test/"
+        in_file = 'volume(table 6)_test2'
         
     else:
-        path = pardir + "/dataSets/training/"
-        in_file = 'volume(table 6)_training'
+        path = pardir + "/dataSet_phase2/train/"
+        in_file = 'volume(table 6)_training2'
     
     
     avgVolume(in_file)
 
 if __name__ == '__main__':
-    main(0)
+    main(1)
 
 
 

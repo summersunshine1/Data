@@ -41,8 +41,8 @@ def getvolumeinfo():
             if not time in holidaydic[id]:
                 holidaydic[id][time]={}
             holidaydic[id][time][length] = 1
-        
-        resdic[id][time].append(float(volumes[i]))
+        else:
+            resdic[id][time].append(float(volumes[i]))
     return resdic,holidaydic
     
     
@@ -132,6 +132,8 @@ def plot(resdic):
     for id in ids:
         times = list(resdic[id].keys())
         times = sorted(times, key = functools.cmp_to_key(cmp_time))
+        l = len(times)
+        index = 0
         for time in times:
             temps = resdic[id][time]
             temps = sorted(temps.items(),key = functools.cmp_to_key(cmp_datetime))
@@ -140,14 +142,21 @@ def plot(resdic):
             for i in range(len(temps)):
                 keys.append(temps[i][0])
                 values.append(temps[i][1])
+            values = zeroNormalize(values)
             dates = keys
             v = pd.DataFrame(values)
             dates = get_datetime_from_timearr(dates)
             datesindex = pd.DatetimeIndex(dates)
             v.index = datesindex
-            plt.title(id+" "+time)
-            plt.plot(v)
-            plt.show()
+            # v = v.resample('W', label='left', closed='left') 
+            if not index==0 and index%6==1:
+                # plt.title(id+" "+time)
+                # if (index>l-18 and index<l-6):
+                    # v = v.shift(-1)
+                plt.plot(v)
+            index+=1
+        plt.title(id)
+        plt.show()
             
 if __name__=='__main__':
     resdic = getnewvolumeinfo()

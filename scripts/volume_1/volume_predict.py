@@ -1,43 +1,48 @@
 import pandas as pd
 from datetime import datetime,timedelta
 import numpy as np
-from statsmodels.tsa.stattools import adfuller
+# from statsmodels.tsa.stattools import adfuller
 import matplotlib.pylab as plt
 from matplotlib.pylab import rcParams
 from sklearn.externals import joblib
 
-from statsmodels.tsa.seasonal import seasonal_decompose
-from statsmodels.tsa.arima_model import ARIMA
-from statsmodels.tsa.stattools import acf, pacf
-import statsmodels.api as sm
-from statsmodels.tsa.stattools import arma_order_select_ic
+# from statsmodels.tsa.seasonal import seasonal_decompose
+# from statsmodels.tsa.arima_model import ARIMA
+# from statsmodels.tsa.stattools import acf, pacf
+# import statsmodels.api as sm
+# from statsmodels.tsa.stattools import arma_order_select_ic
 import os.path
-import tensorflow as tf
+from getPath import *
+pardir = getparentdir()
+commonpath = pardir+'/scripts/common'
+import sys
+sys.path.append(commonpath)
+from commonLib import *
 
-from timeseriescase import *
+# from timeseriescase import *
 from predictResidual import *
 
-residual_model_path = "F:/kdd/dataSets/training/residual.pkl"
-trend_model_path = "F:/kdd/dataSets/training/trend.pkl"
-seasonal_path = "F:/kdd/dataSets/training/season_norm.csv"
+residual_model_path = pardir+"/dataSets/training/residual.pkl"
+trend_model_path =  pardir+"/dataSets/training/trend.pkl"
+seasonal_path =  pardir+"/dataSets/training/season_norm.csv"
 
-volume_test_path = "F:/kdd/dataSets/testing_phase1/predict_voulume_data.csv"
-real_volume_path = "F:/kdd/dataSets/testing_phase1/test1_20min_avg_volume_update.csv"
-final_res_path = "F:/kdd/dataSets/testing_phase1/predicted_volume.csv"
-error_residual_path = "F:/kdd/dataSets/training/error_residual.csv"
+volume_test_path =  pardir+"/dataSets/testing_phase1/predict_voulume_data.csv"
+real_volume_path =  pardir+"/dataSets/testing_phase1/test1_20min_avg_volume_update.csv"
+final_res_path =  pardir+"/dataSets/testing_phase1/predicted_volume.csv"
+error_residual_path =  pardir+"/dataSets/training/error_residual.csv"
 
-lstm_predict_path = "F:/kdd/dataSets/training/lstmResult.csv"
-residual_data = pd.read_csv(lstm_predict_path, encoding='utf-8')
+# lstm_predict_path =  pardir+"/dataSets/training/lstmResult.csv"
+# residual_data = pd.read_csv(lstm_predict_path, encoding='utf-8')
 
 
 predict_data = pd.read_csv(volume_test_path, encoding='utf-8') 
 real_data = pd.read_csv(real_volume_path, encoding='utf-8')
 
-pastresidual = pd.read_csv("F:/kdd/dataSets/training/residual.csv", encoding='utf-8')
+pastresidual = pd.read_csv( pardir+"/dataSets/training/residual.csv", encoding='utf-8')
 
 id = 3
 direction = 1
-
+    
 def getresidual():
     volumes = pastresidual['volume']
     # plt.plot(volumes)
@@ -160,7 +165,7 @@ def getResidualdic():
     return res_dic
     
 def predict(trend_cols,residual_cols):
-    residual_predict_y = model_predict(residual_model_path, 1,residual_cols)
+    # residual_predict_y = model_predict(residual_model_path, 1,residual_cols)
     # residual_dic = getResidualdic()
     # residual_predict_y = getresidual()
     trend_predict_y = model_predict(trend_model_path, 0, trend_cols)

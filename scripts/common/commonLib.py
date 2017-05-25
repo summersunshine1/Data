@@ -193,6 +193,8 @@ def get_datetime_from_timearr(times):
 def get_intersection_toll():
     return ['A-2','A-3','B-3','B-1','C-3','C-1']
     
+    
+    
 def get_path():
     dic = {}
     dic['A-2'] = [0,1] #[110,123,107,108][120,117]
@@ -242,6 +244,10 @@ def getPredicttimes(time1="8:0:0",time2="17:0:0"):
         trace_time2 = trace_time2+timedelta(minutes = 20)
         time2 = str(trace_time2.hour)+':'+str(trace_time2.minute)+':'+str(trace_time2.second)
     return times
+    
+def get_time_from_str(time):
+    trace_time= datetime.strptime(time, "%H:%M:%S")
+    return str(trace_time.hour)+':'+str(trace_time.minute)+':'+str(trace_time.second)
 
 def getfollowingtime(time1):
     times = []

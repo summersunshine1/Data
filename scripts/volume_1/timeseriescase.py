@@ -14,11 +14,13 @@ keep_prob = 1.0
 hidden_size = 100
 num_layers = 3
 
+from getPath import *
+pardir = getparentdir()
 
-real_volume_path = "F:/kdd/dataSets/testing_phase1/test1_20min_avg_volume_update.csv"
+real_volume_path = pardir+"/dataSets/testing_phase1/test1_20min_avg_volume_update.csv"
 real_data = pd.read_csv(real_volume_path, encoding='utf-8')
 
-residual_path = "F:/kdd/dataSets/training/residual.csv"
+residual_path = pardir+"/dataSets/training/residual.csv"
 marks = pd.read_csv(residual_path,encoding='utf-8')
 data = marks['volume']
 
@@ -111,7 +113,7 @@ def train_rnn():
         plt.show()
         
 def writeResultTofile(values):
-    file_path = "F:/kdd/dataSets/training/lstmResult.csv"
+    file_path = pardir+"/dataSets/training/lstmResult.csv"
     dates = np.array(["2016/10/18","2016/10/19","2016/10/20","2016/10/21","2016/10/22","2016/10/23","2016/10/24"]) 
     fw = open(file_path, 'w')
     l = len(values)

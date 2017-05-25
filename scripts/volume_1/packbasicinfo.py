@@ -110,11 +110,16 @@ def getnearneigbours():
             train_arr.append(resdic[id][time])
         train_arr = np.array(train_arr)
         m.fit(train_arr)
+        index = 0
         for time in test_times:    
             y = np.array([resdic[id][time]])
             knn_idx,dm = m.regress(y)
             temp = []
-            for i in knn_idx[0]:
+            tempidx = [3,4,5]
+            if not index == 0 and index%6==0:
+                tempidx = np.array(tempidx)+6
+            index+=1
+            for i in tempidx:
                 if not id in testdic:
                     continue
                 if not train_times[i] in testdic[id]:
@@ -158,7 +163,7 @@ def writeResTofile(finalresultdic):
     
  
 if __name__ == "__main__":
-    getbasicinfo()
-    # finalresultdic = getnearneigbours()
-    # writeResTofile(finalresultdic)
+    # getbasicinfo()
+    finalresultdic = getnearneigbours()
+    writeResTofile(finalresultdic)
     # file_path = 

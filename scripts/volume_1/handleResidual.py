@@ -14,16 +14,16 @@ sys.path.append(commonpath)
 from commonLib import *
 
 
-weather_norm_path = "F:/kdd/dataSets/training/norm_weather (table 7)_training.csv"
+weather_norm_path = pardir + "/dataSets/training/norm_weather (table 7)_training.csv"
 weather_info = pd.read_csv(weather_norm_path,encoding='utf-8')
 
-residual_path = "F:/kdd/dataSets/training/residual_norm.csv"
-trend_path = "F:/kdd/dataSets/training/trend_norm.csv"
-seasonal_path = "F:/kdd/dataSets/training/season_norm.csv"
+residual_path = pardir + "/dataSets/training/residual_norm.csv"
+trend_path = pardir + "/dataSets/training/trend_norm.csv"
+seasonal_path = pardir + "/dataSets/training/season_norm.csv"
 
 days = {7:31,8:31,9:30,10:31,11:30,12:31}
 
-data_path = "F:/kdd/dataSets/training/training_20min_avg_volume_update.csv"
+data_path = pardir + "/dataSets/training/training_20min_avg_volume_update.csv"
 dateparse = lambda dates: pd.datetime.strptime(dates, '%Y-%m-%d %H:%M:%S')
 # data = pd.read_csv(data_path, parse_dates=['time_window'], index_col='time_window',date_parser=dateparse)
 data = pd.read_csv(data_path, encoding='utf-8')
@@ -82,7 +82,7 @@ def get_weather_info():
     return weather_dic
     
 def writeResidual(residual):
-    file_path = "F:/kdd/dataSets/training/residual.csv"
+    file_path = pardir + "/dataSets/training/residual.csv"
     fw = open(file_path,'w')
     fw.writelines(','.join(['"time_window"','"volume"']) + '\n')
     l = len(residual)

@@ -3,6 +3,11 @@ import pandas as pd
 import numpy as np
 import math
 from datetime import datetime
+from getPath import *
+pardir = getparentdir()
+commonpath = pardir+'/scripts/common'
+import sys
+sys.path.append(commonpath)
 from commonLib import *
 
 days = {7:31,8:31,9:30,10:31,11:30,12:31}
@@ -17,9 +22,9 @@ intervals = ""
 
 # aggregate_path = "F:/kdd/dataSets/training/totaldata.csv"
 
-weather_norm_path = "F:/kdd/dataSets/testing_phase1/norm_weather (table 7)_test1.csv"
+weather_norm_path = pardir+"/dataSets/testing_phase1/norm_weather (table 7)_test1.csv"
 
-aggregate_path = "F:/kdd/dataSets/testing_phase1/predict_voulume_data.csv"
+aggregate_path = pardir+"/dataSets/testing_phase1/predict_voulume_data.csv"
 
 weather_info = pd.read_csv(weather_norm_path,encoding='utf-8')
 

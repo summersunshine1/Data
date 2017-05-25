@@ -2,7 +2,7 @@
 import pandas as pd
 import numpy as np
 # from sklearn.cross_validation import cross_val_score
-import seaborn as sns
+# import seaborn as sns
 from sklearn.linear_model import LinearRegression
 from sklearn.model_selection import cross_val_score
 from sklearn.metrics import make_scorer
@@ -13,7 +13,7 @@ from sklearn.ensemble import RandomForestRegressor
 from sklearn.model_selection import GridSearchCV
 import matplotlib.pylab as plt
 from sklearn.ensemble import GradientBoostingRegressor
-from timeseriescase import *
+# from timeseriescase import *
 
 
 from getPath import *
@@ -24,11 +24,11 @@ sys.path.append(commonpath)
 from commonLib import *
 from sklearn.metrics import r2_score
 
-residual_path = "F:/kdd/dataSets/training/residual_norm.csv"
-trend_path = "F:/kdd/dataSets/training/trend_norm.csv"
+residual_path = pardir+"/dataSets/training/residual_norm.csv"
+trend_path = pardir+"/dataSets/training/trend_norm.csv"
 
-residual_model_path = "F:/kdd/dataSets/training/residual.pkl"
-trend_model_path = "F:/kdd/dataSets/training/trend.pkl" 
+residual_model_path = pardir+"/dataSets/training/residual.pkl"
+trend_model_path = pardir+"/dataSets/training/trend.pkl" 
 
 # tuned_parameters = [{'kernel': ['rbf'], 'gamma': [1e-3, 1e-4], 'epsilon':[0.1,0.2,0.3],
                      # 'C': [1, 5, 10, 100]}]
@@ -80,9 +80,10 @@ def create_main():
     # creat_model(trend_path, trend_model_path, 0)
     trend_cols = selectfeature(trend_path, 0)
     # trend_cols = 1
-    residual_cols = selectfeature(residual_path, 1)
+    # residual_cols = selectfeature(residual_path, 1)
     # train_rnn()
     # trend_cols = 1
+    residual_cols = 1
     return trend_cols,residual_cols
     
     
