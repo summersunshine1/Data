@@ -115,7 +115,7 @@ def getnearneigbours():
             y = np.array([resdic[id][time]])
             knn_idx,dm = m.regress(y)
             temp = []
-            tempidx = [3,4,5]
+            tempidx = [0,1,2,3,4,5]
             if not index == 0 and index%6==0:
                 tempidx = np.array(tempidx)+6
             index+=1

@@ -7,6 +7,8 @@ from getPath import *
 pardir = getparentdir()
 volume_path = pardir + '/dataSets/training/training_20min_avg_volume.csv'
 volume_test_path = pardir + '/dataSets/testing_phase1/test1_20min_avg_volume.csv'
+volume_test_path = pardir+"/dataSet_phase2/train/training2_20min_avg_volume.csv"
+
 common_path = pardir+'/scripts/common'
 
 import sys
@@ -44,8 +46,7 @@ def getvolumeinfo():
         else:
             resdic[id][time].append(float(volumes[i]))
     return resdic,holidaydic
-    
-    
+       
 def getnewvolumeinfo():
     info = pd.read_csv(volume_path, encoding='utf-8')
     resdic = {}
@@ -98,8 +99,8 @@ def addTestInfo(resdic={},holidaydic={}):
             if not time in holidaydic[id]:
                 holidaydic[id][time]={}
             holidaydic[id][time][length] = 1
-        # else:
-        resdic[id][time].append(float(volumes[i]))
+        else:
+            resdic[id][time].append(float(volumes[i]))
     return resdic,holidaydic
     
 def get_totaldata():

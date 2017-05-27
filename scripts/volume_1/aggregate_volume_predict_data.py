@@ -12,6 +12,7 @@ from commonLib import *
 
 days = {7:31,8:31,9:30,10:31,11:30,12:31}
 intervals = ""
+total_dates = ""
 
 # intervals = np.array([24,25,26,27,28,29,51,52,53,54,55,56])
 
@@ -61,11 +62,9 @@ def aggregate(id, direction):
     norm_time_dic = getnormtime()
     
     weather_dic = get_weather_info()
-    
-    dates = np.array(["2016/10/18","2016/10/19","2016/10/20","2016/10/21","2016/10/22","2016/10/23","2016/10/24"]) 
     ids = np.array([id])
     directions = np.array([direction])
-    
+    dates = total_dates
     datearr = []
     for i in ids:
         for d in directions:
@@ -117,10 +116,25 @@ def aggregate(id, direction):
     
 def aggregate_main(id, direction, isvalid):
     global intervals
-    if isvalid:
-        intervals = np.array([18,19,20,21,22,23,45,46,47,48,49,50])
+    global total_dates
+    # if isvalid:
+        # intervals = np.array([18,19,20,21,22,23,45,46,47,48,49,50])
+    # else:
+        # intervals = np.array([24,25,26,27,28,29,51,52,53,54,55,56])
+        
+    if id == 2 and direction == 0:
+        start = "8:0:0"
+        end = "20:0:0"
     else:
-        intervals = np.array([24,25,26,27,28,29,51,52,53,54,55,56])
+        start = "2:0:0"
+        end = "24:0:0"
+    start_num = get_num_from_timestr(start)
+    end_num = get_num_from_timestr(end)
+    intervals = []
+    for i in range(start_num, end_num):
+        intervals.append(i)
+    intervals = np.array(intervals)    
+    total_dates = np.array(["2016/10/18","2016/10/19","2016/10/20","2016/10/21","2016/10/22","2016/10/23","2016/10/24"]) 
     aggregate(id,direction)
 
 if  __name__ == "__main__":

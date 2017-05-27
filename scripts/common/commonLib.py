@@ -153,6 +153,13 @@ def get_date_num_from_timewindow(time_windows):#2016-07-19 00:00:00
         nums.append(num)
     return dates,nums
     
+def get_num_from_timestr(time):
+    time_arr = time.split(':')
+    num = int((int(time_arr[0])*60+int(time_arr[0]))/20)
+    if num==0:
+        num = 72
+    return num
+    
 def getnormtime(intervals):
     dic = {}
     norm_intervals = zeroNormalize(intervals)
@@ -247,7 +254,10 @@ def getPredicttimes(time1="8:0:0",time2="17:0:0"):
     
 def get_time_from_str(time):
     trace_time= datetime.strptime(time, "%H:%M:%S")
-    return str(trace_time.hour)+':'+str(trace_time.minute)+':'+str(trace_time.second)
+    return trace_time
+    
+def get_str_from_time(time):
+    return str(time.hour)+':'+str(time.minute)+':'+str(time.second)
 
 def getfollowingtime(time1):
     times = []
