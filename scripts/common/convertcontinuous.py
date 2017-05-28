@@ -6,14 +6,27 @@ sys.path.append(commonpath)
 from commonLib import *
 import pandas as pd
 
-weather_train_path = pardir+"/dataSets/training/weather (table 7)_training_update.csv"
-weather_test_path = pardir+"/dataSets/testing_phase1/weather (table 7)_test1.csv"
+weather_train_path = pardir+"/dataSets/training/weather (table 7)_training_update_new.csv"
+# weather_test_path = pardir+"/dataSets/testing_phase1/weather (table 7)_test1.csv"
+weather_test_path = pardir+"/dataSet_phase2/train/weather (table 7)_2.csv"
 
 def get_train_test(colume, train_data, test_data):
-    train_data = [d for d in train_data[colume]]
-    test_data = [d for d in test_data[colume]]
-    data = train_data+test_data
-    return data
+    if not colume == 'date':
+        train_data = [d for d in train_data[colume]]
+        test_data = [d for d in test_data[colume]]
+        data = train_data+test_data
+        return data
+    else:
+        new_train_data = []
+        new_test_data = []
+        for d in train_data[colume]:
+            d = d.replace("-","/")
+            new_train_data.append(d)
+        for d in test_data[colume]:
+            d = d.replace("-","/")
+            new_test_data.append(d)
+        data = new_train_data+new_test_data
+        return data
 
 def get_Discrete_Weather(colume = 'pressure', bins = 10):
     train_data = pd.read_csv(weather_train_path,encoding='utf-8')

@@ -5,9 +5,10 @@ import functools
 
 from getPath import *
 pardir = getparentdir()
-volume_path = pardir + '/dataSets/training/training_20min_avg_volume.csv'
+volume_path = pardir + '/dataSets/training/training_20min_avg_volume_new.csv'
 volume_test_path = pardir + '/dataSets/testing_phase1/test1_20min_avg_volume.csv'
 volume_test_path = pardir+"/dataSet_phase2/train/training2_20min_avg_volume.csv"
+volume_test_path = pardir+"/dataSet_phase2/test/test2_20min_avg_volume.csv"
 
 common_path = pardir+'/scripts/common'
 
@@ -150,14 +151,15 @@ def plot(resdic):
             datesindex = pd.DatetimeIndex(dates)
             v.index = datesindex
             # v = v.resample('W', label='left', closed='left') 
+            plt.plot(v)
             if not index==0 and index%6==1:
                 # plt.title(id+" "+time)
                 # if (index>l-18 and index<l-6):
                     # v = v.shift(-1)
-                plt.plot(v)
+                plt.show()
             index+=1
-        plt.title(id)
-        plt.show()
+        # plt.title(id)
+        # plt.show()
             
 if __name__=='__main__':
     resdic = getnewvolumeinfo()

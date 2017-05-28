@@ -30,7 +30,12 @@ def avgTravelTime(in_file):
         id = str(intersection_id)+'-'+str(tollgate_id)
         linkseq = id_linkseq_dic[id]
         trace_start_time = each_traj[3]
-        trace_start_time = datetime.strptime(trace_start_time, "%Y/%m/%d %H:%M")
+        trace_start_time = trace_start_time.replace("-","/")
+        temparr = trace_start_time.split(":")
+        if(len(temparr)==2):
+            trace_start_time = datetime.strptime(trace_start_time, "%Y/%m/%d %H:%M")
+        else:
+            trace_start_time = datetime.strptime(trace_start_time, "%Y/%m/%d %H:%M:%S")
         time_window_minute = math.floor(trace_start_time.minute / 20) * 20
         start_time_window = datetime(trace_start_time.year, trace_start_time.month, trace_start_time.day,
                                      trace_start_time.hour, time_window_minute, 0)
@@ -85,10 +90,12 @@ def aggregate_path_main(istest):
     infile = ""
     if not istest:
         path = 'F:/kdd/dataSets/training/'
-        in_file = 'trajectories(table 5)_training'
+        in_file = 'trajectories(table 5)_training_new'
     else:
-        path = 'F:/kdd/dataSets/testing_phase1/'
-        in_file = 'trajectories(table 5)_test1'
+        # path = 'F:/kdd/dataSets/testing_phase1/'
+        # in_file = 'trajectories(table 5)_test1'
+        path = 'F:/kdd/dataSet_phase2/test/'
+        in_file = 'trajectories(table 5)_test2'
     avgTravelTime(in_file)
 
 if __name__ == '__main__':

@@ -217,17 +217,17 @@ def aggregate(isval):
                 info.append('"' + str(coder[j]) + '"')
             info = np.array(info)
             
-            # maxwindow = 6
+            # maxwindow = 11
+            # window = 1
             # flag = 1
-            # newdate = date
-            # while(flag and maxwindow>0):
+            # while(flag and window<=maxwindow):
                 # newdate = date
                 # flag = 0
                 # if time_intervals[i]==72:
                     # newdate = getlastdate(date)
-                    # last = time_intervals[i]-maxwindow
+                    # last = time_intervals[i]-window
                 # else:
-                    # last = time_intervals[i]-maxwindow
+                    # last = time_intervals[i]-window
                     # if int(last)== 0:
                         # last = 72
                     # elif last<0:
@@ -235,40 +235,15 @@ def aggregate(isval):
                         # last = last+72
                 # if not newdate in resdic[link]:
                     # flag = 1
-                    # maxwindow-=1
+                    # window+=1
                     # continue
                 # if not last in resdic[link][newdate]:
                     # flag = 1
-                # maxwindow-=1
-            # if flag==1 and maxwindow==0:
+                # window+=1
+            # if flag==1:
                 # continue
-            maxwindow = 11
-            window = 1
-            flag = 1
-            while(flag and window<=maxwindow):
-                newdate = date
-                flag = 0
-                if time_intervals[i]==72:
-                    newdate = getlastdate(date)
-                    last = time_intervals[i]-window
-                else:
-                    last = time_intervals[i]-window
-                    if int(last)== 0:
-                        last = 72
-                    elif last<0:
-                        newdate = getlastdate(date)
-                        last = last+72
-                if not newdate in resdic[link]:
-                    flag = 1
-                    window+=1
-                    continue
-                if not last in resdic[link][newdate]:
-                    flag = 1
-                window+=1
-            if flag==1:
-                continue
-            temp = (resdic[link][newdate][last]-mean)/std
-            restinfo = np.array(['"' + str(temp)+ '"','"'+str(avg_travel_times[i])+ '"'])
+            # temp = (resdic[link][newdate][last]-mean)/std
+            restinfo = np.array(['"' + str(1)+ '"','"'+str(avg_travel_times[i])+ '"'])
             info = np.hstack((info,restinfo))
             out_line = ','.join(info)+'\n'
             fw.writelines(out_line)  
@@ -284,7 +259,8 @@ def aggregate_main(isVal):
         sources_norm_path = pardir+"/dataSets/training/training_20min_avg_path_travel_time.csv"
         aggregate_path = pardir+"/dataSets/training/discrete_totaldata.csv"
     else:
-        sources_norm_path = pardir+"/dataSets/testing_phase1/test1_20min_avg_path_travel_time.csv"
+        # sources_norm_path = pardir+"/dataSets/testing_phase1/test1_20min_avg_path_travel_time.csv"
+        sources_norm_path = pardir+"/dataSet_phase2/test/test2_20min_avg_path_travel_time.csv"
         aggregate_path = pardir+"/dataSets/testing_phase1/discrete_totaldata.csv"
     
     sources_info = pd.read_csv(sources_norm_path,encoding='utf-8')

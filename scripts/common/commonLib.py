@@ -268,6 +268,15 @@ def getfollowingtime(time1):
         time1 = str(trace_time1.hour)+':'+str(trace_time1.minute)+':'+str(trace_time1.second)
     return times
     
+def getlasttime(time1):
+    times = []
+    trace_time1= datetime.strptime(time1, "%H:%M:%S")
+    for i in range(6):
+        times.append(time1)
+        trace_time1 = trace_time1-timedelta(minutes = 20)
+        time1 = str(trace_time1.hour)+':'+str(trace_time1.minute)+':'+str(trace_time1.second)
+    return times
+    
 
     
 

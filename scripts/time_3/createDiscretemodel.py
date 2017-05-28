@@ -60,33 +60,31 @@ def get_smallest_time_arr(timearr):
     
 def selectfeature(x,y,index):
     # clf = RFE(RandomForestRegressor(n_estimators=10, random_state = 0),4)
-    clf = RandomForestRegressor(n_estimators=10, random_state = 0)
-    fit = clf.fit(x,y)
-    # print(len(x[0]))
-    cols = getcols()       
-    importance = clf.feature_importances_
-    # print(importance)
-    # print(len(importance))
-    indices = np.argsort(importance)[::-1]
-    # print(len(indices))
-    for f in range(6):
-        if indices[f]==129:
-            print("129"+" "+str(importance[129]))
-            continue
-        print("%2d) %-*s %f" %(f+1, 30,cols[indices[f]],importance[indices[f]]))
-    x_selected = clf.transform(x,threshold = importance[indices[10]])
+    # clf = RandomForestRegressor(n_estimators=10, random_state = 0)
+    # fit = clf.fit(x,y)
+    # cols = getcols()       
+    # importance = clf.feature_importances_
+    # indices = np.argsort(importance)[::-1]))
+    # for f in range(6):
+        # if indices[f]==129:
+            # print("129"+" "+str(importance[129]))
+            # continue
+        # print("%2d) %-*s %f" %(f+1, 30,cols[indices[f]],importance[indices[f]]))
+    # x_selected = clf.transform(x,threshold = importance[indices[10]])
     
-    featurenums = x_selected.shape[1]
-    feature_dic = {}
-    selected_cols=[]
-    for f in range(featurenums):    
-        if indices[f]==129:
-            continue
-        feature_dic[cols[indices[f]]] = 1
+    # featurenums = x_selected.shape[1]
+    # feature_dic = {}
+    # selected_cols=[]
+    # for f in range(featurenums):    
+        # if indices[f]==129:
+            # continue
+        # feature_dic[cols[indices[f]]] = 1
     
-    for c in cols:
-        if c in feature_dic:
-            selected_cols.append(c)
+    # for c in cols:
+        # if c in feature_dic:
+            # selected_cols.append(c)
+    selected_cols = getcols()
+    x_selected = x
     creat_model(x_selected, y, index)
     return selected_cols
      
@@ -189,9 +187,9 @@ def create_path_model_main():
             z_arr.append(z)
         y_arr = np.array(y_arr)
         y = np.sum(y_arr, axis = 0)
-        z = np.sum(z_arr, axis = 0)
-        z = [[t] for t in z]
-        x = np.hstack((x,z))
+        # z = np.sum(z_arr, axis = 0)
+        # z = [[t] for t in z]
+        # x = np.hstack((x,z))
         
         selected_cols = selectfeature(x,y,index)
         index += 1

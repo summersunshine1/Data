@@ -53,18 +53,20 @@ def getbasicinfo():
             arr.append(np.array(values[i]))
         arr = np.array(arr)
         m.fit(arr)
-        y = np.array([values[0]])
+        start = 8
+        y = np.array([values[start]])
         knn_idx,dm = m.regress(y)
-        print(id+" "+keys[0])
+        print(id+" "+keys[start])
         arr = []
         fig = plt.figure()
         ax = plt.subplot(121)
         ax2 = plt.subplot(122)
-        time = getfollowingtime(keys[0])
+
+        time = getlasttime(keys[start])
         for i in range(len(time)):
             ax.plot(resdic[id][time[i]],label = time[i])
             print(keys[i+1]+" "+str(dm[i+1]))
-        ax2.plot(values[0],label = keys[0])
+        ax2.plot(values[start],label = keys[start])
         for i in knn_idx[0]:
             ax2.plot(values[i],label = keys[i])
             print(keys[i]+" "+str(dm[i]))
@@ -148,6 +150,7 @@ def writeResTofile(finalresultdic):
     fw = open(final_res_path,'w')
     fw.writelines(','.join(['"tollgate_id"', '"time_window"', '"direction"', '"volume"'])+'\n')   
     dates = np.array(["2016/10/18", "2016/10/19", "2016/10/20", "2016/10/21","2016/10/22", "2016/10/23","2016/10/24"]) 
+    dates = np.array(["2016/10/25", "2016/10/26", "2016/10/27", "2016/10/28","2016/10/29", "2016/10/30","2016/10/31"])
     ids = ['1-0','1-1','2-0','3-0','3-1']
     for id in ids:
         temparr = id.split('-')
