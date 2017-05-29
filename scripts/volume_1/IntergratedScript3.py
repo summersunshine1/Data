@@ -2,11 +2,10 @@ from handleResidual import *
 from aggregate_volume_predict_data import *
 from create_volume_model import *
 from packThreefactor import *
+from plot_sametime import *
 
 ids = [1,2,3]
 directions = [0,1]
-
-
 
 def integrate_main(isvalid):
     index = 0
@@ -22,10 +21,6 @@ def integrate_main(isvalid):
             packThreefactor_main(id,direction,trend_cols)
             create_three_factor_model()
             index+=1
-            # if index==2:
-                # break
-        # if index==2:
-                # break 
             
 if __name__ == '__main__':
     integrate_main(0) 

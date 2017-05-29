@@ -8,7 +8,7 @@ pardir = getparentdir()
 volume_path = pardir + '/dataSets/training/training_20min_avg_volume_new.csv'
 volume_test_path = pardir + '/dataSets/testing_phase1/test1_20min_avg_volume.csv'
 volume_test_path = pardir+"/dataSet_phase2/train/training2_20min_avg_volume.csv"
-volume_test_path = pardir+"/dataSet_phase2/test/test2_20min_avg_volume.csv"
+# volume_test_path = pardir+"/dataSet_phase2/test/test2_20min_avg_volume.csv"
 
 common_path = pardir+'/scripts/common'
 
@@ -46,6 +46,7 @@ def getvolumeinfo():
             holidaydic[id][time][length] = 1
         else:
             resdic[id][time].append(float(volumes[i]))
+        
     return resdic,holidaydic
        
 def getnewvolumeinfo():
@@ -74,13 +75,14 @@ def getnewvolumeinfo():
     return resdic
     
 def addTestInfo(resdic={},holidaydic={}):
+    resdic = {}
     info = pd.read_csv(volume_test_path, encoding='utf-8')
     tollgate_ids = info["tollgate_id"]
     directions = info["direction"]
     volumes = info["volume"]
     time_windows = info["time_window"]
     l = len(tollgate_ids)
-    
+    newresdic ={}
     for i in range(l):
         id = str(tollgate_ids[i])+'-'+str(directions[i])
         if not id in resdic:
@@ -102,7 +104,12 @@ def addTestInfo(resdic={},holidaydic={}):
             holidaydic[id][time][length] = 1
         else:
             resdic[id][time].append(float(volumes[i]))
-    return resdic,holidaydic
+    for k,v in resdic.items():
+        if not k in newresdic:
+            newresdic[k]={}
+        for k1,v1 in v.items():
+            newresdic[k][k1]=v1
+    return newresdic,holidaydic
     
 def get_totaldata():
     resdic,holidaydic = getvolumeinfo()

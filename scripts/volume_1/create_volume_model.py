@@ -57,25 +57,43 @@ def creat_model(source_path, modle_path, isResidual):
     
 def create_three_factor_model():
     data = pd.read_csv(three_facor_path,encoding='utf-8')
-    cols = ["neighbour", "season", "trend"]
+    columes = []
+    for i in range(6):
+        columes.append('"' + str(i) + '"')
+    columes = np.array(columes)
+    restColumes = np.array(["season", "trend"])
+    columes = np.hstack((columes, restColumes))
+    # cols = ["neighbour", "season", "trend"]
     newdata = data.sample(frac=1)
-    x1 = zeroNormalize(newdata["neighbour"])
+    
+    x11 = zeroNormalize(newdata["0"])
+    x12 = zeroNormalize(newdata["1"])
+    x13 = zeroNormalize(newdata["2"])
+    x14 = zeroNormalize(newdata["3"])
+    x15 = zeroNormalize(newdata["4"])
+    x16 = zeroNormalize(newdata["5"])
     x2 = zeroNormalize(newdata["season"])
     x3 = zeroNormalize(newdata["trend"])
-    x1 = np.array([[x] for x in x1])
+    # x1 = np.array([[x] for x in x1])
+    x11 = np.array([[x] for x in x11])
+    x12 = np.array([[x] for x in x12])
+    x13 = np.array([[x] for x in x13])
+    x14 = np.array([[x] for x in x14])
+    x15 = np.array([[x] for x in x15])
+    x16 = np.array([[x] for x in x16])
     x2 = np.array([[x] for x in x2])
     x3 = np.array([[x] for x in x3])
-    x=np.hstack((x1,x2,x3))
-    
+    # x=np.hstack((x1,x2,x3))
+    x = np.hstack((x11,x12,x13,x14,x15,x16,x2,x3))
     print("result")
-    y_shuffle = newdata["volume"]
+    y_shuffle = zeroNormalize(newdata["volume"])
     y = data["volume"]
-    plt.plot(data["season"]+data["trend"],color='g')
-    plt.plot(data["neighbour"],color = 'y')
-    plt.plot(y, color='red')
-    print(my_custom_loss_func(y,data["neighbour"]))
+    # plt.plot(data["season"]+data["trend"],color='g')
+    # plt.plot(data["neighbour"],color = 'y')
+    # plt.plot(y, color='red')
+    # print(my_custom_loss_func(y,data["neighbour"]))
     
-    plt.show()
+    # plt.show()
     
 
     clf = LinearSVR(C=1, epsilon=0.1)
@@ -85,6 +103,8 @@ def create_three_factor_model():
     score = make_scorer(my_custom_loss_func, greater_is_better=False)
     scores = -cross_val_score(clf, x, y_shuffle,cv=10,scoring=score)
     print(scores)
+    print(np.mean(scores))
+
     
     
     

@@ -11,7 +11,7 @@ sys.path.append(commonpath)
 from commonLib import *
 
 true_data_path = pardir + "/dataSet_phase2/train/training2_20min_avg_volume.csv"
-predict_data_path = pardir + "/dataSets/testing_phase1/predicted_volume1.csv"
+predict_data_path = pardir + "/res/predicted_volume2-15.csv"
 
 def get_data(path):
     times = getPredicttimes()
@@ -28,7 +28,7 @@ def get_data(path):
             resdic[id] = []
         each_pass = time_windows[i].split(',')
         hourtime = (each_pass[0].split())[1]
-        hourtime = get_time_from_str(hourtime)
+        hourtime = get_timestr_from_str(hourtime)
         if hourtime in times:
             resdic[id].append(volumes[i])
             

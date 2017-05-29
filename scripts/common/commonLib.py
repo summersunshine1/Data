@@ -4,7 +4,7 @@ import math
 from sklearn.preprocessing import OneHotEncoder
 
 def my_custom_loss_func(ground_truth, predictions):
-    return np.mean(np.abs(ground_truth-predictions)/ground_truth) 
+    return np.mean(np.abs((ground_truth-predictions)/ground_truth))
 
 def getphase(interval,date):
     a = math.ceil(interval/9)
@@ -255,6 +255,10 @@ def getPredicttimes(time1="8:0:0",time2="17:0:0"):
 def get_time_from_str(time):
     trace_time= datetime.strptime(time, "%H:%M:%S")
     return trace_time
+    
+def get_timestr_from_str(timestr):
+    trace_time= datetime.strptime(timestr, "%H:%M:%S")
+    return str(trace_time.hour)+':'+str(trace_time.minute)+':'+str(trace_time.second)
     
 def get_str_from_time(time):
     return str(time.hour)+':'+str(time.minute)+':'+str(time.second)
