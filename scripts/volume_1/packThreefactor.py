@@ -86,8 +86,7 @@ def model_predict(model_path,cols):
     clf = joblib.load(model_path)
     predict_y = clf.predict(x)
     return predict_y 
-
-    
+   
 def getneighbour():
     newid = str(id)+'-'+str(direction)
     newresdic,holidaydic = getvolumeinfo()
@@ -130,8 +129,7 @@ def getneighbour():
     
 def getneighbourlist():
     newid = str(id)+'-'+str(direction)
-    newresdic,holidaydic = getvolumeinfo()
-    totalresdic, _ = addTestInfo(newresdic,holidaydic)
+    totalresdic, _ = get_totaldata()
     mean_value_dic = {}
     std_value_dic = {}
     times = totalresdic[newid]
@@ -143,14 +141,16 @@ def getneighbourlist():
         std_value_dic[newid]={}
     for time in times:
         mean_value_dic[newid][time] = np.mean(np.array(totalresdic[newid][time]))
-        std_value_dic[newid][time] = np.std(np.array(totalresdic[newid][time]))        
-    testdic,_ = addTestInfo()
+        std_value_dic[newid][time] = np.std(np.array(totalresdic[newid][time]))
+    testdic = {}
+    holidaydic = {}
+    testdic,_ = getTestInfo(testdic, holidaydic)
     l = len(neigbour_times)
     i = 0
     while(i<=l-6):
         temp = []
         for j in range(i,i+6):
-            # arr = normalizebymean(testdic[newid][neigbour_times[j]], mean_value_dic[newid][neigbour_times[j]], std_value_dic[newid][neigbour_times[j]])
+            arr = normalizebymean(testdic[newid][neigbour_times[j]], mean_value_dic[newid][neigbour_times[j]], std_value_dic[newid][neigbour_times[j]])
             arr = testdic[newid][neigbour_times[j]]
             if(len(arr) == minlen):
                 temp.append(arr)
@@ -158,16 +158,18 @@ def getneighbourlist():
             i=i+6
             continue
         for j in range(i,i+6):
-            # resdic[predict_times[j]] = np.mean(temp,axis=0)*std_value_dic[newid][predict_times[j]]+mean_value_dic[newid][predict_times[j]]
-            resdic[predict_times[j]] = np.array(temp)
+            resdic[predict_times[j]] = np.mean(temp,axis=0)*std_value_dic[newid][predict_times[j]]+mean_value_dic[newid][predict_times[j]]
+            # resdic[predict_times[j]] = np.mean(temp,axis=0)#*std_value_dic[newid][predict_times[j]]+mean_value_dic[newid][predict_times[j]]
+            # resdic[predict_times[j]] = np.array(temp)
             true_volume_dic[predict_times[j]] = testdic[newid][predict_times[j]]
+            # true_volume_dic[predict_times[j]] =  normalizebymean(testdic[newid][predict_times[j]], mean_value_dic[newid][predict_times[j]], std_value_dic[newid][predict_times[j]])
         i= i+6
-    return resdic,true_volume_dic
+    return resdic,true_volume_dic,mean_value_dic,std_value_dic
     
 def writetofile(path,cols):
     fw = open(path, 'w')
     columes = []
-    for i in range(6):
+    for i in range(1):
         columes.append('"' + str(i) + '"')
     columes = np.array(columes)
     restColumes = np.array(['"date"', '"time"', '"season"', '"trend"','"volume"'])
@@ -176,7 +178,7 @@ def writetofile(path,cols):
     fw.writelines(','.join(columes) + '\n')
     
     seasondic = getseasonal()
-    resdic,true_volume_dic= getneighbourlist()
+    resdic,true_volume_dic,mean_value_dic,std_value_dic= getneighbourlist()
     predict_res =  model_predict(trend_model_path, cols)
     c = 0
     
@@ -188,7 +190,7 @@ def writetofile(path,cols):
             # neighbour = resdic[time][i]
             if not time in resdic:
                 continue
-            neighbour = resdic[time][:,i]
+            neighbour = resdic[time][i]
             if len(true_volume_dic[time])<minlen:
                 continue
             volume = true_volume_dic[time][i]
@@ -200,10 +202,11 @@ def writetofile(path,cols):
             fw.writelines(out_line)
             c+=1
     fw.close()
+    return mean_value_dic,std_value_dic
     
 def packThreefactor_main(id_, direction_,cols):
     setid_direction(id_, direction_)
-    writetofile(final_path, cols)
+    mean_value_dic,std_value_dic = writetofile(final_path, cols)
 
 def testdatalack():
     data = pd.read_csv(volume_path, encoding='utf-8')

@@ -67,26 +67,35 @@ def create_three_factor_model():
     newdata = data.sample(frac=1)
     
     x11 = zeroNormalize(newdata["0"])
-    x12 = zeroNormalize(newdata["1"])
-    x13 = zeroNormalize(newdata["2"])
-    x14 = zeroNormalize(newdata["3"])
-    x15 = zeroNormalize(newdata["4"])
-    x16 = zeroNormalize(newdata["5"])
+    # x12 = zeroNormalize(newdata["1"])
+    # x13 = zeroNormalize(newdata["2"])
+    # x14 = zeroNormalize(newdata["3"])
+    # x15 = zeroNormalize(newdata["4"])
+    # x16 = zeroNormalize(newdata["5"])
+    # x11 = newdata["0"]
+    # x12 = newdata["1"]
+    # x13 = newdata["2"]
+    # x14 = newdata["3"]
+    # x15 = newdata["4"]
+    # x16 = newdata["5"]
     x2 = zeroNormalize(newdata["season"])
     x3 = zeroNormalize(newdata["trend"])
+    x2 = newdata["season"]
+    x3 = newdata["trend"]
     # x1 = np.array([[x] for x in x1])
     x11 = np.array([[x] for x in x11])
-    x12 = np.array([[x] for x in x12])
-    x13 = np.array([[x] for x in x13])
-    x14 = np.array([[x] for x in x14])
-    x15 = np.array([[x] for x in x15])
-    x16 = np.array([[x] for x in x16])
+    # x12 = np.array([[x] for x in x12])
+    # x13 = np.array([[x] for x in x13])
+    # x14 = np.array([[x] for x in x14])
+    # x15 = np.array([[x] for x in x15])
+    # x16 = np.array([[x] for x in x16])
     x2 = np.array([[x] for x in x2])
     x3 = np.array([[x] for x in x3])
     # x=np.hstack((x1,x2,x3))
-    x = np.hstack((x11,x12,x13,x14,x15,x16,x2,x3))
+    x = np.hstack((x11,x2,x3))
     print("result")
-    y_shuffle = zeroNormalize(newdata["volume"])
+    # y_shuffle = zeroNormalize(newdata["volume"])
+    y_shuffle = newdata["volume"]
     y = data["volume"]
     # plt.plot(data["season"]+data["trend"],color='g')
     # plt.plot(data["neighbour"],color = 'y')
@@ -104,10 +113,8 @@ def create_three_factor_model():
     scores = -cross_val_score(clf, x, y_shuffle,cv=10,scoring=score)
     print(scores)
     print(np.mean(scores))
+    
 
-    
-    
-    
 def create_main():
     trend_cols = selectfeature(trend_path, 0)
     residual_cols = 1

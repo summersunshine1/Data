@@ -155,7 +155,13 @@ def get_date_num_from_timewindow(time_windows):#2016-07-19 00:00:00
     
 def get_num_from_timestr(time):
     time_arr = time.split(':')
-    num = int((int(time_arr[0])*60+int(time_arr[0]))/20)
+    num = int((int(time_arr[0])*60+int(time_arr[1]))/20)
+    if num==0:
+        num = 72
+    return num
+    
+def get_num_from_hour_minute(hour,minute):
+    num = hour*60+minute
     if num==0:
         num = 72
     return num
@@ -280,6 +286,19 @@ def getlasttime(time1):
         trace_time1 = trace_time1-timedelta(minutes = 20)
         time1 = str(trace_time1.hour)+':'+str(trace_time1.minute)+':'+str(trace_time1.second)
     return times
+    
+def get_neighbour_window(starttime,endtime):
+    time_windows=[]
+    start = datetime.strptime(starttime, "%H:%M:%S")
+    end = datetime.strptime(endtime, "%H:%M:%S")
+    time = start
+    timestr = get_str_from_time(time)
+    endstr = get_str_from_time(end)
+    while(timestr!=endstr):
+        time_windows.append(timestr)
+        time += timedelta(minutes = 20)
+        timestr = get_str_from_time(time)
+    return time_windows
     
 
     

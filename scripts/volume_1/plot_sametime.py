@@ -73,9 +73,13 @@ def getnewvolumeinfo():
         
         resdic[id][time][date] = float(volumes[i])
     return resdic
-    
-def addTestInfo(resdic={},holidaydic={}):
-    resdic = {}
+ 
+def get_totaldata():
+    resdic,holidaydic = getvolumeinfo()
+    resdic,holidaydic = getTestInfo(resdic, holidaydic)
+    return resdic,holidaydic
+
+def getTestInfo(resdic, holidaydic):
     info = pd.read_csv(volume_test_path, encoding='utf-8')
     tollgate_ids = info["tollgate_id"]
     directions = info["direction"]
@@ -110,11 +114,6 @@ def addTestInfo(resdic={},holidaydic={}):
         for k1,v1 in v.items():
             newresdic[k][k1]=v1
     return newresdic,holidaydic
-    
-def get_totaldata():
-    resdic,holidaydic = getvolumeinfo()
-    resdic,holidaydic = addTestInfo(resdic,holidaydic)
-    return resdic,holidaydic
  
 def cmp_datetime(a, b):
     tempa = datetime.strptime(a[0],"%Y/%m/%d")
