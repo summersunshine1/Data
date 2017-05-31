@@ -20,23 +20,30 @@ volume_final_path =  pardir+"/dataSet_phase2/test/predict_voulume_data.csv"
 
 predict_info = pd.read_csv(data_path, encoding = 'utf-8')
 
-def model_predict(model_path, cols, minsize): 
+# def model_predict(model_path, cols, meanx,stdx): 
+def model_predict(model_path, cols, features,mean_x1,std_x1):
     if len(cols)==0:
         cols = list(predict_info.columns.values)
         cols = cols[1:-2]
     temp = cols[:-1]
     x = np.array(predict_info[temp])
    
-    # x1 = zeroNormalize(predict_info[cols[-1]])
+    newx1 = []
+    for t in  predict_info[cols[-1]]:
+        newx1.append((t-mean_x1)/std_x1)
+    x1 = [[t] for t in newx1]    
     
-    x1 = [[t] for t in predict_info[cols[-1]]]
+    # x1 = [[t] for t in predict_info[cols[-1]]] 
     x = np.hstack((x,x1))
-    if not minsize==0:
-        pca = PCA(n_components=len(cols))
-        pca.fit(x)
-        feature_arr = pca.components_
-        part = feature_arr[:,:minsize]
-        x = mat(x)*mat(part)
+    x = mat(x)*mat(features)
+    
+    # if not minsize==0:
+        # pca = PCA(n_components=len(cols))
+        # pca.fit(x)
+        # feature_arr = pca.components_
+        # part = feature_arr[:,:minsize]
+        # x = mat(x)*mat(part)
+        # print(minsize)
     
     clf = joblib.load(model_path)
     predict_y = clf.predict(x)
@@ -48,8 +55,10 @@ def model_predict(model_path, cols, minsize):
     plt.show()
     return predict_y
     
-def predict_by_new_factor_main(cols,minsize):
-    predict_y = model_predict(model_path, cols, minsize)
+# def predict_by_new_factor_main(cols,meanx,stdx):
+def predict_by_new_factor_main(cols,features,mean_x1,std_x1):
+    # predict_y = model_predict(model_path, cols, meanx,stdx)
+    predict_y = model_predict(model_path, cols, features,mean_x1,std_x1)
     dates = predict_info['date']
     times = predict_info['time']
     ids = predict_info['id']

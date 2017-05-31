@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import pandas as pd
+from numpy import *
 import numpy as np
 from sklearn.externals import joblib
 from datetime import datetime,timedelta
@@ -111,14 +112,15 @@ def getaheadtime():
     avg = np.mean(timearr)
     return newdic,std,avg
 
-def predict(isValidation):
+def predict(isValidation,features):
     linkseq = get_link_seperate_path()
     rfrpaths, svrpaths = get_model_path(len(linkseq))
     if isValidation:
         ys = []
         for i in range(len(linkseq)):
             x,y = aggregate_data_by_link(linkseq[i])
-            print(x)
+            x = mat(x)*mat(features[i])
+            # print(x)
             ys.append(y)
             # rf = joblib.load(rfrpaths[i])
             svr = joblib.load(svrpaths[i])
@@ -140,6 +142,7 @@ def predict(isValidation):
             totaltime = np.sum(totaltime, axis = 0)
             totaltime = [[t] for t in totaltime]
             x = get_test_data(selected_arr[i])
+            x = mat(x)*mat(features[i])
             # x = np.hstack((x,totaltime))
             svr = joblib.load(svrpaths[i])
             # predict_y1 = rf.predict(x)
@@ -184,7 +187,7 @@ def format_result(ys):
                 fw.writelines(out_line)
     fw.close()    
  
-def predict_path_main(isValidation, arr):
+def predict_path_main(isValidation, arr, features):
     global data_path
     global selected_arr
     global sources_info
@@ -200,10 +203,10 @@ def predict_path_main(isValidation, arr):
 
     if isValidation:
         data_path = pardir + "/dataSets/testing_phase1/discrete_totaldata.csv"
-        predict(isValidation)
+        predict(isValidation,features)
     else:
         data_path = pardir + "/dataSets/testing_phase1/predict_discrete_data.csv"
-        y = predict(isValidation)
+        y = predict(isValidation,features)
         y = aggregate_result(y)
         format_result(y)
 

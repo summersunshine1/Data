@@ -11,7 +11,8 @@
 2-17 : 2-15采用前2小时数据的平均
 2-18 : 2-17新数据 0.2406
 2-19: 邻居，天气，normtime,week linearsvr 
-2-20: 邻居，天气，normtime,week linearsvr  pca降维
+2-20: 邻居归一化，天气，normtime,week linearsvr  
+2-21 邻居归一化，天气，normtime,week  pca降维 linearsvr 与2-20几乎差不多
 
 1-1 所有路段一起通过svr计算
 1-2 通过GBT,rf,svr三者汇总成绩平均
@@ -21,3 +22,4 @@
 1-7 路段分别建模，采用离散化特征，利用libnearsvr,全部特征 提升0.1916
 1-8 路段分别建模，采用离散化特征，利用libnearsvr,11个特征，采用之前的时间作为自变量
 1-9 路段分别建模，采用离散化特征，利用libnearsvr 新数据
+1-10  路段分别建模，采用离散化特征，利用libnearsvr 新数据,pca降维

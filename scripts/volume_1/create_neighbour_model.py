@@ -60,9 +60,18 @@ def create_model():
     # plt.plot(x11)
     # plt.plot(y1)
     # plt.show()
-    # x1 = zeroNormalize(x1)
+    mean_x1 = np.mean(x1)
+    std_x1 = np.std(x1)
+    x1 = zeroNormalize(x1)
     x1 = np.array([[t] for t in x1])
     x = np.hstack((x,x1))
+    # clf = LinearSVR(C=1, epsilon=0.1)
+    # clf.fit(x, y)  
+    # score = make_scorer(my_custom_loss_func, greater_is_better=False)
+    # scores = -cross_val_score(clf, x, y,cv=10,scoring=score)
+    # print(np.mean(scores))
+    # features = 1
+    # joblib.dump(clf, model_path)
     pca = PCA(n_components=len(cols)+1)
     pca.fit(x)
     feature_arr = pca.components_
@@ -70,7 +79,7 @@ def create_model():
     trysize = [10,20,30,40,50,60,70,80,90,100,110,120,130]
     results = []
     minscore = 100
-    minsize = -1
+    features = []
     for size in trysize:
         part = feature_arr[:,:size]
         temp = mat(x)*mat(part)
@@ -78,14 +87,16 @@ def create_model():
         clf.fit(temp, y) 
         score = make_scorer(my_custom_loss_func, greater_is_better=False)
         scores = -cross_val_score(clf, temp, y,cv=10,scoring=score)
-        print(scores)
         mean_score = np.mean(scores)
         if mean_score < minscore:
-            minscore = meanscore
-            minsize = size
-        print(np.mean(scores))
+            minscore = mean_score
+            features = part
+            joblib.dump(clf, model_path) 
+        
         results.append(np.mean(scores))
-    return minsize
+    print(minscore)
+    # return mean_x1,std_x1
+    return features,mean_x1,std_x1
     # plt.plot(results)
     # plt.show()
     

@@ -10,8 +10,10 @@ import sys
 sys.path.append(commonpath)
 from commonLib import *
 
-true_data_path = pardir + "/res/predicted_volume2-17.csv"
-predict_data_path = pardir + "/res/predicted_volume2-19.csv"
+true_data_path = pardir + "/res/predicted_volume2-18.csv"
+# true_data_path = pardir + "/res/predicted_volume2-19.csv"
+path= pardir + "/res/predicted_volume2-20.csv"
+predict_data_path = pardir + "/res/predicted_volume2-21.csv"
 
 def get_data(path):
     times = getPredicttimes(1)
@@ -37,13 +39,15 @@ def get_data(path):
     
 def compare_result():
     true_dic = get_data(true_data_path)
+    temp_dic = get_data(path)
     predict_dic = get_data(predict_data_path)
     ids = list(true_dic.keys())
     ground = []
     predict = []
     for id in ids:
         plt.plot(true_dic[id],color='r')
-        plt.plot(predict_dic[id])
+        plt.plot(predict_dic[id],color='g')
+        plt.plot(temp_dic[id],color='y')
         plt.title(id)
         plt.show()
         ground = np.hstack((ground, true_dic[id]))

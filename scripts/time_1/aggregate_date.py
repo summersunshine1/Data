@@ -3,8 +3,11 @@ import pandas as pd
 import numpy as np
 import math
 from datetime import datetime
+from getPath import *
+pardir = getparentdir()
+commonpath = pardir+'/scripts/common'
 import sys
-sys.path.append("E:/kdd/Data/scripts/common")
+sys.path.append(commonpath)
 from commonLib import *
 
 weather_norm_path = ""
@@ -120,15 +123,15 @@ def aggregate_main(isVal):
     global routes_info
     global sources_info
     if not isVal:
-        weather_norm_path = "F:/kdd/dataSets/training/norm_weather (table 7)_training.csv"
-        routes_norm_path= "F:/kdd/dataSets/training/norm_widthandlength.csv"
-        sources_norm_path = "F:/kdd/dataSets/training/norm_avg_travel_time.csv"
-        aggregate_path = "F:/kdd/dataSets/training/totaldata.csv"
+        weather_norm_path = pardir+"/dataSets/training/norm_weather (table 7)_training.csv"
+        routes_norm_path= pardir+"/dataSets/training/norm_widthandlength.csv"
+        sources_norm_path = pardir+"/dataSets/training/norm_avg_travel_time.csv"
+        aggregate_path = pardir+"/dataSets/training/totaldata.csv"
     else:
-        weather_norm_path = "F:/kdd/dataSets/testing_phase1/norm_weather (table 7)_test1.csv"
-        sources_norm_path = "F:/kdd/dataSets/testing_phase1/norm_avg_travel_time.csv"
-        routes_norm_path= "F:/kdd/dataSets/training/norm_widthandlength.csv"
-        aggregate_path = "F:/kdd/dataSets/testing_phase1/totaldata.csv"
+        weather_norm_path = pardir+"/dataSets/testing_phase1/norm_weather (table 7)_test1.csv"
+        sources_norm_path = pardir+"/dataSets/testing_phase1/norm_avg_travel_time.csv"
+        routes_norm_path= pardir+"/dataSets/training/norm_widthandlength.csv"
+        aggregate_path = pardir+"/dataSets/testing_phase1/totaldata.csv"
     
     weather_info = pd.read_csv(weather_norm_path,encoding='utf-8')
     routes_info = pd.read_csv(routes_norm_path,encoding='utf-8')

@@ -18,8 +18,11 @@ from pandas import read_csv
 from sklearn.feature_selection import RFE
 import xgboost as xgb
 
+from getPath import *
+pardir = getparentdir()
+commonpath = pardir+'/scripts/common'
 import sys
-sys.path.append("F:/kdd/scripts/common")
+sys.path.append(commonpath)
 from commonLib import *
                         
 
