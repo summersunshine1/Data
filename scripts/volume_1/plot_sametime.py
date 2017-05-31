@@ -5,9 +5,8 @@ import functools
 
 from getPath import *
 pardir = getparentdir()
-volume_path = pardir + '/dataSets/training/training_20min_avg_volume_new.csv'
-volume_test_path = pardir + '/dataSets/testing_phase1/test1_20min_avg_volume.csv'
-volume_test_path = pardir+"/dataSet_phase2/train/training2_20min_avg_volume.csv"
+volume_path = pardir + '/dataSets/training/training_20min_avg_volume.csv'
+volume_test_path = pardir+"/dataSet_phase2/train/training2_20min_avg_volume.csv" 
 # volume_test_path = pardir+"/dataSet_phase2/test/test2_20min_avg_volume.csv"
 
 common_path = pardir+'/scripts/common'
@@ -15,6 +14,16 @@ common_path = pardir+'/scripts/common'
 import sys
 sys.path.append(common_path)
 from commonLib import *
+
+def plot_init(istest):
+    global volume_path
+    global volume_test_path
+    if not istest:
+        volume_path = pardir + '/dataSets/training/training_20min_avg_volume.csv'
+        volume_test_path = pardir+"/dataSet_phase2/train/training2_20min_avg_volume.csv"   
+    else:
+        volume_path = pardir + '/dataSets/training/training_20min_avg_volume_new.csv'
+        volume_test_path = pardir+"/dataSet_phase2/test/test2_20min_avg_volume.csv"
 
 def getvolumeinfo():
     info = pd.read_csv(volume_path, encoding='utf-8')
@@ -168,6 +177,7 @@ def plot(resdic):
         # plt.show()
             
 if __name__=='__main__':
+    plot_init(0)
     resdic = getnewvolumeinfo()
     plot(resdic)
     

@@ -62,47 +62,46 @@ def getsourceinfo():
         resdic[id][date][interval] = volumes[i]
     return resdic
     
-def getweatherarr(isval):
+def getweatherarr(istest):
     weatherarr = []
     for c in globalcolumes:
-        if isval:
+        if istest:
             _,traindic = get_Discrete_Weather(c, 10)
         else:
             traindic,_ = get_Discrete_Weather(c, 10)
         weatherarr.append(traindic)
     return weatherarr      
+
     
-def aggregate(isval):
+def aggregate(istest):
     ids = ['1-0','1-1','2-0','3-0','3-1']
     columes = []
     columes.append('"id"')
     weekdayarr = get_Discrete_Normtime(7)
     normtimearr = get_Discrete_Normtime(72)
     totallen = 7+72
-    totallen += len(globalcolumes*10)
-    weatherarr = getweatherarr(isval)
+    totallen += len(globalcolumes)*10
+    weatherarr = getweatherarr(istest)
     for i in range(totallen):
         columes.append('"' + str(i) + '"')
     columes = np.array(columes)
-    restColumes = np.array(['"neighbour"','"volume"'])
-    columes = np.hstack((columes, restColumes))
+    if istest:
+         restcolumes = np.array(['"neighbour"','"date"','"time"'])
+    else:
+        restcolumes = np.array(['"neighbour"','"volume"'])
+    # restcolumes = np.array(['"a"','"b"','"c"','"d"','"e"','"f"','"volume"'])
+    columes = np.hstack((columes, restcolumes))
     fw = open(aggregate_path, 'w')
     fw.writelines(','.join(columes) + '\n')
-    
-    dates = np.array(["2016/10/18","2016/10/19","2016/10/20","2016/10/21","2016/10/22","2016/10/23","2016/10/24"])
+    if not istest:
+        dates = np.array(["2016/10/18","2016/10/19","2016/10/20","2016/10/21","2016/10/22","2016/10/23","2016/10/24"])
+    else:
+        dates = np.array(["2016/10/25","2016/10/26","2016/10/27","2016/10/28","2016/10/29","2016/10/30","2016/10/31"])
     length = len(dates)
-    totalresdic,testdic = get_dic_from_totaldata()
+    totalresdic,testdic = get_dic_from_totaldata(istest)
     for id in ids:
-        resdic,true_volume_dic,_,_ = getneighbourlist(id,totalresdic,testdic)
+        resdic,true_volume_dic,neigbour_times,predict_times = getneighbourlist(id,totalresdic,testdic,istest)
         keys = list(weatherarr[0].keys())
-        neigbour_times=""
-        predict_times = ""
-        if id == '2-0':
-            neigbour_times = get_neighbour_window("6:0:0","18:0:0")
-            predict_times = get_neighbour_window("8:0:0","20:0:0")    
-        else:
-            neigbour_times = get_neighbour_window("0:0:0","22:0:0")
-            predict_times = get_neighbour_window("2:0:0","0:0:0")
         for i in range(length):
             for j in range(len(predict_times)):
                 timeinterval = get_num_from_timestr(predict_times[j])
@@ -127,29 +126,38 @@ def aggregate(isval):
                 info = np.array(info)
                 if not predict_times[j] in resdic:
                     continue
-                
-                restinfo = np.array(['"' + str(resdic[predict_times[j]][i])+ '"','"'+str(true_volume_dic[predict_times[j]][i])+ '"'])
+                # restinfo = list(resdic[predict_times[j]][:,i])
+                # restinfo.append('"'+str(true_volume_dic[predict_times[j]][i])+ '"')
+                if istest:
+                    restinfo = np.array(['"' + str(resdic[predict_times[j]][i])+ '"','"' + dates[i]+ '"','"' +predict_times[j] + '"'])
+                else:
+                    restinfo = np.array(['"' + str(resdic[predict_times[j]][i])+ '"','"'+str(true_volume_dic[predict_times[j]][i])+ '"'])
                 info = np.hstack((info,restinfo))
                 out_line = ','.join(info)+'\n'
                 fw.writelines(out_line)  
     fw.close()
  
-def get_dic_from_totaldata():
+def get_dic_from_totaldata(istest):
+    plot_init(istest)
     totalresdic, _ = get_totaldata()
     testdic = {}
     test_holidaydic = {}
     testdic,_ = getTestInfo(testdic, test_holidaydic)
     return totalresdic,testdic
         
-def getneighbourlist(newid,totalresdic,testdic):
+def getneighbourlist(newid,totalresdic,testdic, istest):
     neigbour_times=""
     predict_times = ""
-    if newid == '2-0':
-        neigbour_times = get_neighbour_window("6:0:0","18:0:0")
-        predict_times = get_neighbour_window("8:0:0","20:0:0")    
+    if istest:
+        neigbour_times = getPredicttimes(0)
+        predict_times = getPredicttimes(1)
     else:
-        neigbour_times = get_neighbour_window("0:0:0","22:0:0")
-        predict_times = get_neighbour_window("2:0:0","0:0:0")
+        if newid == '2-0':
+            neigbour_times = get_neighbour_window("6:0:0","18:0:0")
+            predict_times = get_neighbour_window("8:0:0","20:0:0")    
+        else:
+            neigbour_times = get_neighbour_window("0:0:0","22:0:0")
+            predict_times = get_neighbour_window("2:0:0","0:0:0")
     mean_value_dic = {}
     std_value_dic = {}
     times = totalresdic[newid]
@@ -162,37 +170,52 @@ def getneighbourlist(newid,totalresdic,testdic):
     for time in times:
         mean_value_dic[newid][time] = np.mean(np.array(totalresdic[newid][time]))
         std_value_dic[newid][time] = np.std(np.array(totalresdic[newid][time]))
-    
     l = len(neigbour_times)
     i = 0
-    while(i<=l-6):
-        temp = []
-        for j in range(i,i+6):
-            arr = normalizebymean(testdic[newid][neigbour_times[j]], mean_value_dic[newid][neigbour_times[j]], std_value_dic[newid][neigbour_times[j]])
-            arr = testdic[newid][neigbour_times[j]]
-            if(len(arr) == minlen):
-                temp.append(arr)
-        if len(temp)<6:
-            i=i+6
-            continue
-        for j in range(i,i+6):
-            if len(testdic[newid][predict_times[j]])<minlen:
+    if not istest:
+        while(i<=l-6):
+            temp = []
+            for j in range(i,i+6):
+                arr = normalizebymean(testdic[newid][neigbour_times[j]], mean_value_dic[newid][neigbour_times[j]], std_value_dic[newid][neigbour_times[j]])
+                # arr = testdic[newid][neigbour_times[j]]
+                if(len(arr) == minlen):
+                    temp.append(arr)
+            if len(temp)<6:
+                i=i+6
                 continue
-            resdic[predict_times[j]] = np.mean(temp,axis=0)*std_value_dic[newid][predict_times[j]]+mean_value_dic[newid][predict_times[j]]
-            # resdic[predict_times[j]] = np.mean(temp,axis=0)#*std_value_dic[newid][predict_times[j]]+mean_value_dic[newid][predict_times[j]]
-            # resdic[predict_times[j]] = np.array(temp)
-            true_volume_dic[predict_times[j]] = testdic[newid][predict_times[j]]
-            # true_volume_dic[predict_times[j]] =  normalizebymean(testdic[newid][predict_times[j]], mean_value_dic[newid][predict_times[j]], std_value_dic[newid][predict_times[j]])
-        i= i+6
-    return resdic,true_volume_dic,mean_value_dic,std_value_dic
+            for j in range(i,i+6):
+                if len(testdic[newid][predict_times[j]])<minlen:
+                    continue
+                resdic[predict_times[j]] = np.mean(temp,axis=0)*std_value_dic[newid][predict_times[j]]+mean_value_dic[newid][predict_times[j]]
+                # resdic[predict_times[j]] = np.mean(temp,axis=0)#*std_value_dic[newid][predict_times[j]]+mean_value_dic[newid][predict_times[j]]
+                # resdic[predict_times[j]] = np.array(temp)
+                true_volume_dic[predict_times[j]] = testdic[newid][predict_times[j]]
+                # true_volume_dic[predict_times[j]] =  normalizebymean(testdic[newid][predict_times[j]], mean_value_dic[newid][predict_times[j]], std_value_dic[newid][predict_times[j]])
+            i= i+6
+            
+    else:
+        while(i<=l-6):
+            temp = []
+            for j in range(i,i+6):
+                arr = normalizebymean(testdic[newid][neigbour_times[j]], mean_value_dic[newid][neigbour_times[j]], std_value_dic[newid][neigbour_times[j]])
+                # arr = testdic[newid][neigbour_times[j]]
+                if(len(arr) == minlen):
+                    temp.append(arr)
+            if len(temp)<6:
+                i=i+6
+                continue
+            for j in range(i,i+6):
+                resdic[predict_times[j]] = np.mean(temp,axis=0)*std_value_dic[newid][predict_times[j]]+mean_value_dic[newid][predict_times[j]]
+            i= i+6
+    return resdic,true_volume_dic,neigbour_times,predict_times
     
-def aggregate_main(isVal):
+def aggregate_main(istest):
     global sources_norm_path
     global aggregate_path
     
     global sources_info
     
-    if not isVal:
+    if not istest:
         sources_norm_path = pardir+"/dataSets/training/training_20min_avg_volume_new.csv"
         aggregate_path = pardir+"/dataSets/training/discrete_volume_totaldata.csv"
     else:
@@ -201,7 +224,7 @@ def aggregate_main(isVal):
         aggregate_path = pardir+"/dataSet_phase2/test/discrete_volume_totaldata.csv"
     
     sources_info = pd.read_csv(sources_norm_path,encoding='utf-8')
-    aggregate(isVal)
+    aggregate(istest)
     
 if __name__=="__main__":
-    aggregate_main(0)
+    aggregate_main(1)

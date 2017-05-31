@@ -10,11 +10,11 @@ import sys
 sys.path.append(commonpath)
 from commonLib import *
 
-true_data_path = pardir + "/dataSet_phase2/train/training2_20min_avg_volume.csv"
-predict_data_path = pardir + "/res/predicted_volume2-15.csv"
+true_data_path = pardir + "/res/predicted_volume2-17.csv"
+predict_data_path = pardir + "/res/predicted_volume2-19.csv"
 
 def get_data(path):
-    times = getPredicttimes()
+    times = getPredicttimes(1)
     data = pd.read_csv(path, encoding='utf-8')
     time_windows = data["time_window"]
     tollgate_ids = data["tollgate_id"]

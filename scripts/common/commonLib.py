@@ -186,6 +186,7 @@ def get_time_from_interval(date,interval):
     end_time_window = start_time_window + timedelta(minutes=20)
     return start_time_window,end_time_window
     
+    
 def get_time_from_datetime(date, time):
     trace_time = datetime.strptime(date, "%Y/%m/%d")
     trace_hour = datetime.strptime(time, "%H:%M:%S")
@@ -242,9 +243,13 @@ def getweatherarr(isval = 1):
         weatherarr.append(traindic)
     return weatherarr 
     
-def getPredicttimes(time1="8:0:0",time2="17:0:0"):
-    # time1 = "8:0:0"
-    # time2 = "17:0:0"
+def getPredicttimes(isPredict):
+    if isPredict:
+        time1 = "8:0:0"
+        time2 = "17:0:0"
+    else:
+        time1 = "6:0:0"
+        time2 = "15:0:0"
     times = []
     trace_time1= datetime.strptime(time1, "%H:%M:%S")
     trace_time2= datetime.strptime(time2, "%H:%M:%S")
