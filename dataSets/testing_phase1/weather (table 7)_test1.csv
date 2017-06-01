@@ -1,4 +1,4 @@
-"date","hour","pressure","sea_pressure","wind_direction","wind_speed","temperature","rel_humidity","precipitation"
+date,hour,pressure,sea_pressure,wind_direction,wind_speed,temperature,rel_humidity,precipitation
 "2016-10-18","0","1015.2000","1020.3000","62.0000","2.1000","20.5000","87.0000","0.0000"
 "2016-10-18","3","1014.5000","1019.5000","37.0000","2.5000","23.3000","73.0000","0.0000"
 "2016-10-18","6","1012.5000","1017.5000","128.0000","1.6000","23.4000","73.0000","0.0000"

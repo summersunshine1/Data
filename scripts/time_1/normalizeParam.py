@@ -2,32 +2,38 @@
 import pandas as pd
 import numpy as np
 from datetime import datetime
+from getPath import *
+pardir = getparentdir()
+commonpath = pardir + "/scripts/common"
 import sys
-sys.path.append("F:/kdd/scripts/common")
+sys.path.append(commonpath)
 from commonLib import *
 # from sklearn import preprocessing
 
-weather_path = "F:/kdd/dataSets/training/weather (table 7)_training.csv"
-routes_path = "F:/kdd/dataSets/training/widthandlength.csv"
-sources_path = "F:/kdd/dataSets/training/training_20min_avg_travel_time.csv"
-weather_info = pd.read_csv(weather_path,encoding='utf-8')
-routes_info = pd.read_csv(routes_path,encoding='utf-8')
-sources_info = pd.read_csv(sources_path,encoding='utf-8')
+weather_path = pardir + "/dataSets/training/weather (table 7)_training.csv"
+routes_path = pardir + "/dataSets/training/widthandlength.csv"
+sources_path = pardir + "/dataSets/training/training_20min_avg_travel_time.csv"
 
-weather_norm_path = "F:/kdd/dataSets/training/norm_weather (table 7)_training.csv"
-routes_norm_path= "F:/kdd/dataSets/training/norm_widthandlength.csv"
-sources_norm_path = "F:/kdd/dataSets/training/norm_avg_travel_time.csv"
 
-weather_path = "F:/kdd/dataSets/testing_phase1/weather (table 7)_test1.csv"
-sources_path = "F:/kdd/dataSets/testing_phase1/test1_20min_avg_travel_time.csv"
-weather_info = pd.read_csv(weather_path,encoding='utf-8')
-sources_info = pd.read_csv(sources_path,encoding='utf-8')
+weather_norm_path = pardir + "/dataSets/training/norm_weather (table 7)_training.csv"
+routes_norm_path= pardir + "/dataSets/training/norm_widthandlength.csv"
+sources_norm_path = pardir + "/dataSets/training/norm_avg_travel_time.csv"
+
+weather_path = pardir + "/dataSets/testing_phase1/weather (table 7)_test1.csv"
+sources_path = pardir + "/dataSets/testing_phase1/test1_20min_avg_travel_time.csv"
 
 weather_norm_path = "F:/kdd/dataSets/testing_phase1/norm_weather (table 7)_test1.csv"
 sources_norm_path = "F:/kdd/dataSets/testing_phase1/norm_avg_travel_time.csv"
 
+sources_path = pardir + "/dataSets/training/training_20min_avg_travel_time_new.csv"
+sources_norm_path = pardir +"/dataSets/training/norm_avg_travel_time_new.csv"
 
-    # return preprocessing.scale(arr)
+# sources_path = pardir + "/dataSet_phase2/test/test2_20min_avg_travel_time.csv"
+# sources_norm_path = pardir +"/dataSet_phase2/train/norm_avg_travel_time_new.csv"
+
+weather_info = pd.read_csv(weather_path,encoding='utf-8')
+routes_info = pd.read_csv(routes_path,encoding='utf-8')
+sources_info = pd.read_csv(sources_path,encoding='utf-8')
     
 def NormWinddirection(arr):
     newarr = []
@@ -138,8 +144,8 @@ def writeSourcesNorm(filepath):
             
     
 if __name__ == "__main__":
-    writeWeatherNorm(weather_norm_path)
-    writeRoutesNorm(routes_norm_path)
+    # writeWeatherNorm(weather_norm_path)
+    # writeRoutesNorm(routes_norm_path)
     writeSourcesNorm(sources_norm_path)
                                  
                                  

@@ -88,7 +88,7 @@ def getNormalizeHoliday(dates):
     for i in range(l):
         holiday = isholiday(dates[i])
         holidays.append(holiday)
-    holidays = zeroNormalize(holidays)
+    # holidays = zeroNormalize(holidays)
     holidaydic = {}
     for i in range(l):
         holidaydic[dates[i]] = holidays[i]

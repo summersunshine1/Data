@@ -5,8 +5,7 @@ from predict import *
 
 def integrate_main(isVal):
     aggregate_main(0)
-    selectfeature()
-    
+    creatmodel_main()
     if isVal:
        aggregate_main(isVal)
     else:      
