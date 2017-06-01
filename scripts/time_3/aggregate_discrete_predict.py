@@ -44,6 +44,7 @@ def aggregate():
     fw.writelines(','.join(columes) + '\n')
     
     dates = np.array(["2016/10/18","2016/10/19","2016/10/20","2016/10/21","2016/10/22","2016/10/23","2016/10/24"])
+    dates = np.array(["2016/10/25", "2016/10/26", "2016/10/27", "2016/10/28","2016/10/29", "2016/10/30","2016/10/31"])
     datearr = []
     intervalarr = []
     for date in dates:
@@ -51,13 +52,15 @@ def aggregate():
             datearr.append(date)
             intervalarr.append(interval)
     length = len(datearr)
-    
+    print(length)
     for i in range(length):
         interval = intervalarr[i]
         date = datearr[i]
         phase,date = getphase(intervalarr[i],datearr[i])
         # print(weatherarr[0].keys())
-        formatday = date.replace('/','-')
+        # formatday = date.replace('/','-')
+        formatday = date
+        print(formatday)
         if not formatday in weatherarr[0]:
             continue
         if not phase in weatherarr[0][formatday]:

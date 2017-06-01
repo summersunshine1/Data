@@ -10,11 +10,13 @@ import sys
 sys.path.append(commonpath)
 from commonLib import *
 
-true_data_path = pardir + "/dataSet_phase2/train/training2_20min_avg_volume.csv"
-predict_data_path = pardir + "/dataSets/testing_phase1/predicted_volume1.csv"
+true_data_path = pardir + "/res/predicted_volume2-18.csv"
+# true_data_path = pardir + "/res/predicted_volume2-19.csv"
+path= pardir + "/res/predicted_volume2-20.csv"
+predict_data_path = pardir + "/res/predicted_volume2-21.csv"
 
 def get_data(path):
-    times = getPredicttimes()
+    times = getPredicttimes(1)
     data = pd.read_csv(path, encoding='utf-8')
     time_windows = data["time_window"]
     tollgate_ids = data["tollgate_id"]
@@ -28,7 +30,7 @@ def get_data(path):
             resdic[id] = []
         each_pass = time_windows[i].split(',')
         hourtime = (each_pass[0].split())[1]
-        hourtime = get_time_from_str(hourtime)
+        hourtime = get_timestr_from_str(hourtime)
         if hourtime in times:
             resdic[id].append(volumes[i])
             
@@ -37,13 +39,15 @@ def get_data(path):
     
 def compare_result():
     true_dic = get_data(true_data_path)
+    temp_dic = get_data(path)
     predict_dic = get_data(predict_data_path)
     ids = list(true_dic.keys())
     ground = []
     predict = []
     for id in ids:
         plt.plot(true_dic[id],color='r')
-        plt.plot(predict_dic[id])
+        plt.plot(predict_dic[id],color='g')
+        plt.plot(temp_dic[id],color='y')
         plt.title(id)
         plt.show()
         ground = np.hstack((ground, true_dic[id]))

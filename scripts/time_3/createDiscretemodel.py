@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import pandas as pd
+from numpy import *
 import numpy as np
 # from sklearn.cross_validation import cross_val_score
 from sklearn.linear_model import LinearRegression,ElasticNet,ElasticNetCV
@@ -13,6 +14,7 @@ from sklearn.ensemble import AdaBoostRegressor
 from sklearn.tree import DecisionTreeRegressor
 from sklearn.ensemble import GradientBoostingRegressor
 from sklearn.metrics import roc_auc_score
+from sklearn.decomposition import PCA
 
 from pandas import read_csv
 from sklearn.feature_selection import RFE
@@ -58,37 +60,68 @@ def get_smallest_time_arr(timearr):
             minindex = i
     return timearr[minindex]
     
+def choose_smallest_features(x,y,totallen,index):
+    pca = PCA(n_components=totallen)
+    pca.fit(x)
+    feature_arr = pca.components_
+    trysize = []
+    i = 10
+    while(i<totallen):
+        trysize.append(i)
+        i = i+10
+    trysize.append(totallen)
+    print(trysize)
+    results = []
+    minscore = 100
+    part_feature = []
+    path = pardir+'/scripts/model/svr'+str(index)+'.pkl'
+    for size in trysize:
+        part = feature_arr[:,:size]
+        temp = mat(x)*mat(part)
+        clf = LinearSVR(C=1, epsilon=0.1)
+        clf.fit(temp, y) 
+        score = make_scorer(my_custom_loss_func, greater_is_better=False)
+        scores = -cross_val_score(clf, temp, y,cv=10,scoring=score)
+        print(scores)
+        mean_score = np.mean(scores)
+        if mean_score < minscore:
+            minscore = mean_score
+            part_feature = part
+            joblib.dump(clf, path)
+    print(minscore)    
+    return part_feature
+    
 def selectfeature(x,y,index):
     # clf = RFE(RandomForestRegressor(n_estimators=10, random_state = 0),4)
-    clf = RandomForestRegressor(n_estimators=10, random_state = 0)
-    fit = clf.fit(x,y)
-    # print(len(x[0]))
-    cols = getcols()       
-    importance = clf.feature_importances_
-    # print(importance)
-    # print(len(importance))
-    indices = np.argsort(importance)[::-1]
-    # print(len(indices))
-    for f in range(6):
-        if indices[f]==129:
-            print("129"+" "+str(importance[129]))
-            continue
-        print("%2d) %-*s %f" %(f+1, 30,cols[indices[f]],importance[indices[f]]))
-    x_selected = clf.transform(x,threshold = importance[indices[10]])
+    # clf = RandomForestRegressor(n_estimators=10, random_state = 0)
+    # fit = clf.fit(x,y)
+    # cols = getcols()       
+    # importance = clf.feature_importances_
+    # indices = np.argsort(importance)[::-1]))
+    # for f in range(6):
+        # if indices[f]==129:
+            # print("129"+" "+str(importance[129]))
+            # continue
+        # print("%2d) %-*s %f" %(f+1, 30,cols[indices[f]],importance[indices[f]]))
+    # x_selected = clf.transform(x,threshold = importance[indices[10]])
     
-    featurenums = x_selected.shape[1]
-    feature_dic = {}
-    selected_cols=[]
-    for f in range(featurenums):    
-        if indices[f]==129:
-            continue
-        feature_dic[cols[indices[f]]] = 1
+    # featurenums = x_selected.shape[1]
+    # feature_dic = {}
+    # selected_cols=[]
+    # for f in range(featurenums):    
+        # if indices[f]==129:
+            # continue
+        # feature_dic[cols[indices[f]]] = 1
     
-    for c in cols:
-        if c in feature_dic:
-            selected_cols.append(c)
-    creat_model(x_selected, y, index)
-    return selected_cols
+    # for c in cols:
+        # if c in feature_dic:
+            # selected_cols.append(c)
+    selected_cols = getcols()
+    x_selected = x
+    partfeature = 1
+    partfeature = choose_smallest_features(x_selected,y,len(selected_cols),index)
+    # creat_model(x_selected, y, index)
+    return selected_cols,partfeature
      
 def creat_model1(x,y):
     
@@ -163,7 +196,7 @@ def creat_model(x,y,index):
     clf.fit(x, y)   
     score = make_scorer(my_custom_loss_func, greater_is_better=False)
     scores = -cross_val_score(clf, x, y,cv=10,scoring=score)
-    print(scores)
+    print(np.mean(scores))
     path = pardir+'/scripts/model/svr'+str(index)+'.pkl'
     joblib.dump(clf, path)
     # clf = RandomForestRegressor(n_estimators = 200, oob_score = True, n_jobs = -1,random_state =50,
@@ -180,6 +213,7 @@ def create_path_model_main():
     index = 1#represent different links in global_linkseq
     linkseq = get_link_seperate_path()
     select_arr = []
+    features = []
     for links in linkseq:
         y_arr = []
         z_arr = []
@@ -189,15 +223,16 @@ def create_path_model_main():
             z_arr.append(z)
         y_arr = np.array(y_arr)
         y = np.sum(y_arr, axis = 0)
-        z = np.sum(z_arr, axis = 0)
-        z = [[t] for t in z]
-        x = np.hstack((x,z))
+        # z = np.sum(z_arr, axis = 0)
+        # z = [[t] for t in z]
+        # x = np.hstack((x,z))
         
-        selected_cols = selectfeature(x,y,index)
+        selected_cols,partfeature = selectfeature(x,y,index)
+        features.append(partfeature)
         index += 1
         select_arr.append(selected_cols)
     print(select_arr)
-    return select_arr
+    return select_arr,features
     
 if __name__ == "__main__":
     create_path_model_main()

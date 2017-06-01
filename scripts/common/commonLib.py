@@ -4,7 +4,7 @@ import math
 from sklearn.preprocessing import OneHotEncoder
 
 def my_custom_loss_func(ground_truth, predictions):
-    return np.mean(np.abs(ground_truth-predictions)/ground_truth) 
+    return np.mean(np.abs((ground_truth-predictions)/ground_truth))
 
 def getphase(interval,date):
     a = math.ceil(interval/9)
@@ -153,6 +153,19 @@ def get_date_num_from_timewindow(time_windows):#2016-07-19 00:00:00
         nums.append(num)
     return dates,nums
     
+def get_num_from_timestr(time):
+    time_arr = time.split(':')
+    num = int((int(time_arr[0])*60+int(time_arr[1]))/20)
+    if num==0:
+        num = 72
+    return num
+    
+def get_num_from_hour_minute(hour,minute):
+    num = hour*60+minute
+    if num==0:
+        num = 72
+    return num
+    
 def getnormtime(intervals):
     dic = {}
     norm_intervals = zeroNormalize(intervals)
@@ -172,6 +185,7 @@ def get_time_from_interval(date,interval):
     start_time_window = datetime(year, month, day, hour, minute, 0)
     end_time_window = start_time_window + timedelta(minutes=20)
     return start_time_window,end_time_window
+    
     
 def get_time_from_datetime(date, time):
     trace_time = datetime.strptime(date, "%Y/%m/%d")
@@ -229,9 +243,13 @@ def getweatherarr(isval = 1):
         weatherarr.append(traindic)
     return weatherarr 
     
-def getPredicttimes(time1="8:0:0",time2="17:0:0"):
-    # time1 = "8:0:0"
-    # time2 = "17:0:0"
+def getPredicttimes(isPredict):
+    if isPredict:
+        time1 = "8:0:0"
+        time2 = "17:0:0"
+    else:
+        time1 = "6:0:0"
+        time2 = "15:0:0"
     times = []
     trace_time1= datetime.strptime(time1, "%H:%M:%S")
     trace_time2= datetime.strptime(time2, "%H:%M:%S")
@@ -247,7 +265,14 @@ def getPredicttimes(time1="8:0:0",time2="17:0:0"):
     
 def get_time_from_str(time):
     trace_time= datetime.strptime(time, "%H:%M:%S")
+    return trace_time
+    
+def get_timestr_from_str(timestr):
+    trace_time= datetime.strptime(timestr, "%H:%M:%S")
     return str(trace_time.hour)+':'+str(trace_time.minute)+':'+str(trace_time.second)
+    
+def get_str_from_time(time):
+    return str(time.hour)+':'+str(time.minute)+':'+str(time.second)
 
 def getfollowingtime(time1):
     times = []
@@ -257,6 +282,28 @@ def getfollowingtime(time1):
         trace_time1 = trace_time1+timedelta(minutes = 20)
         time1 = str(trace_time1.hour)+':'+str(trace_time1.minute)+':'+str(trace_time1.second)
     return times
+    
+def getlasttime(time1):
+    times = []
+    trace_time1= datetime.strptime(time1, "%H:%M:%S")
+    for i in range(6):
+        times.append(time1)
+        trace_time1 = trace_time1-timedelta(minutes = 20)
+        time1 = str(trace_time1.hour)+':'+str(trace_time1.minute)+':'+str(trace_time1.second)
+    return times
+    
+def get_neighbour_window(starttime,endtime):
+    time_windows=[]
+    start = datetime.strptime(starttime, "%H:%M:%S")
+    end = datetime.strptime(endtime, "%H:%M:%S")
+    time = start
+    timestr = get_str_from_time(time)
+    endstr = get_str_from_time(end)
+    while(timestr!=endstr):
+        time_windows.append(timestr)
+        time += timedelta(minutes = 20)
+        timestr = get_str_from_time(time)
+    return time_windows
     
 
     

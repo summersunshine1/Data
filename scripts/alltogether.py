@@ -1,8 +1,9 @@
 import pandas as pd
 import numpy as np
+import matplotlib.pylab as plt
 
 path1 = 'F:/kdd/res/predict_result2-1.csv'
-path2 = 'F:/kdd/res/predict_result5-1.csv'
+path2 = 'F:/kdd/res/predict_result10-1.csv'
 
 def writetofile(path, dic):
     fw = open(path, 'w')
@@ -29,6 +30,10 @@ def together():
     toll2 = data2["tollgate_id"]
     time2 = data2["time_window"]
     avg_travel_time2 = data2["avg_travel_time"]
+    plt.plot(avg_travel_time1)
+    plt.plot(avg_travel_time2)
+    plt.show()
+    
     
     dic1 = {}
     dic2 = {}
@@ -42,7 +47,6 @@ def together():
     for i in range(length2):
         id = intersection2[i]+'_'+str(toll2[i])+'_'+time2[i]
         dic2[id] = avg_travel_time2[i] 
-    
     if len(dic1)<len(dic2):
         for k,v in dic1.items():
             dic1[k] += dic2[k]
@@ -57,7 +61,7 @@ def together():
             
 if __name__=="__main__":
     dic = together()
-    writetofile('F:/kdd/res/predict_result6-1.csv',dic)
+    writetofile('F:/kdd/res/predict_result11-1.csv',dic)
     
         
     

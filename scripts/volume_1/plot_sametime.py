@@ -6,12 +6,24 @@ import functools
 from getPath import *
 pardir = getparentdir()
 volume_path = pardir + '/dataSets/training/training_20min_avg_volume.csv'
-volume_test_path = pardir + '/dataSets/testing_phase1/test1_20min_avg_volume.csv'
+volume_test_path = pardir+"/dataSet_phase2/train/training2_20min_avg_volume.csv" 
+# volume_test_path = pardir+"/dataSet_phase2/test/test2_20min_avg_volume.csv"
+
 common_path = pardir+'/scripts/common'
 
 import sys
 sys.path.append(common_path)
 from commonLib import *
+
+def plot_init(istest):
+    global volume_path
+    global volume_test_path
+    if not istest:
+        volume_path = pardir + '/dataSets/training/training_20min_avg_volume.csv'
+        volume_test_path = pardir+"/dataSet_phase2/train/training2_20min_avg_volume.csv"   
+    else:
+        volume_path = pardir + '/dataSets/training/training_20min_avg_volume_new.csv'
+        volume_test_path = pardir+"/dataSet_phase2/test/test2_20min_avg_volume.csv"
 
 def getvolumeinfo():
     info = pd.read_csv(volume_path, encoding='utf-8')
@@ -43,9 +55,9 @@ def getvolumeinfo():
             holidaydic[id][time][length] = 1
         else:
             resdic[id][time].append(float(volumes[i]))
+        
     return resdic,holidaydic
-    
-    
+       
 def getnewvolumeinfo():
     info = pd.read_csv(volume_path, encoding='utf-8')
     resdic = {}
@@ -70,15 +82,20 @@ def getnewvolumeinfo():
         
         resdic[id][time][date] = float(volumes[i])
     return resdic
-    
-def addTestInfo(resdic={},holidaydic={}):
+ 
+def get_totaldata():
+    resdic,holidaydic = getvolumeinfo()
+    resdic,holidaydic = getTestInfo(resdic, holidaydic)
+    return resdic,holidaydic
+
+def getTestInfo(resdic, holidaydic):
     info = pd.read_csv(volume_test_path, encoding='utf-8')
     tollgate_ids = info["tollgate_id"]
     directions = info["direction"]
     volumes = info["volume"]
     time_windows = info["time_window"]
     l = len(tollgate_ids)
-    
+    newresdic ={}
     for i in range(l):
         id = str(tollgate_ids[i])+'-'+str(directions[i])
         if not id in resdic:
@@ -98,14 +115,14 @@ def addTestInfo(resdic={},holidaydic={}):
             if not time in holidaydic[id]:
                 holidaydic[id][time]={}
             holidaydic[id][time][length] = 1
-        # else:
-        resdic[id][time].append(float(volumes[i]))
-    return resdic,holidaydic
-    
-def get_totaldata():
-    resdic,holidaydic = getvolumeinfo()
-    resdic,holidaydic = addTestInfo(resdic,holidaydic)
-    return resdic,holidaydic
+        else:
+            resdic[id][time].append(float(volumes[i]))
+    for k,v in resdic.items():
+        if not k in newresdic:
+            newresdic[k]={}
+        for k1,v1 in v.items():
+            newresdic[k][k1]=v1
+    return newresdic,holidaydic
  
 def cmp_datetime(a, b):
     tempa = datetime.strptime(a[0],"%Y/%m/%d")
@@ -149,16 +166,18 @@ def plot(resdic):
             datesindex = pd.DatetimeIndex(dates)
             v.index = datesindex
             # v = v.resample('W', label='left', closed='left') 
+            plt.plot(v)
             if not index==0 and index%6==1:
                 # plt.title(id+" "+time)
                 # if (index>l-18 and index<l-6):
                     # v = v.shift(-1)
-                plt.plot(v)
+                plt.show()
             index+=1
-        plt.title(id)
-        plt.show()
+        # plt.title(id)
+        # plt.show()
             
 if __name__=='__main__':
+    plot_init(0)
     resdic = getnewvolumeinfo()
     plot(resdic)
     
